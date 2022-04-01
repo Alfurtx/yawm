@@ -1,0 +1,32 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
+%.o	makefile	/^%.o: %.c$/;"	t
+BIN	makefile	/^BIN = .$/;"	m
+CC	makefile	/^CC = gcc$/;"	m
+CFLAGS	makefile	/^CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic -Wstrict-aliasing$/;"	m
+Goals	README.md	/^### Goals$/;"	S	chapter:YAWM
+INCS	makefile	/^INCS = -I$(X11INC)$/;"	m
+LDFLAGS	makefile	/^LDFLAGS = -lm$/;"	m
+LIBS	makefile	/^LIBS = -L$(X11LIB)$/;"	m
+OBJ	makefile	/^OBJ = $(SRC:.c=.o)$/;"	m
+OS	makefile	/^OS = $(shell uname -s)$/;"	m
+SRC	makefile	/^SRC = $(wildcard .\/*.c)$/;"	m
+TARGET	makefile	/^TARGET = $(BIN)\/yawm$/;"	m
+X11INC	makefile	/^X11INC = \/usr\/X11R6\/include$/;"	m
+X11LIB	makefile	/^X11LIB = \/usr\/X11R6\/lib$/;"	m
+YAWM	README.md	/^# YAWM$/;"	c
+all	makefile	/^all: update_ctags yawm$/;"	t
+clean	makefile	/^clean:$/;"	t
+main	main.c	/^main(void)$/;"	f	typeref:typename:int
+run	makefile	/^run:$/;"	t
+update_ctags	makefile	/^update_ctags:$/;"	t
+yawm	makefile	/^yawm: $(OBJ)$/;"	t
