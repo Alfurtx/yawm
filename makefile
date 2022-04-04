@@ -3,16 +3,16 @@
 #
 
 OS = $(shell uname -s)
-CC = gcc
+CC = clang
 CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic -Wstrict-aliasing
 CFLAGS += -Wno-unused-parameter -Wno-switch -Wno-unused-function
-LDFLAGS = -lm
+LDFLAGS = -lm -lX11
 
 # X11 flags (based on dwm)
-X11INC = /usr/X11R6/include
-X11LIB = /usr/X11R6/lib
-INCS = -I$(X11INC)
-LIBS = -L$(X11LIB)
+# X11INC = /usr/X11R6/include
+# X11LIB = /usr/X11R6/lib
+# INCS = -I$(X11INC)
+# LIBS = -L$(X11LIB)
 
 CFLAGS += -D_DEFAULT_SOURCE -D_POSIX_C_SOURCE=200809L
 CFLAGS += -Os

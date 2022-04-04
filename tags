@@ -10,23 +10,56 @@
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
 %.o	makefile	/^%.o: %.c$/;"	t
+0	compile_commands.json	/^      "\/usr\/bin\/gcc",$/;"	s	array:0.arguments
+0	compile_commands.json	/^  {$/;"	o
+1	compile_commands.json	/^      "-c",$/;"	s	array:0.arguments
+10	compile_commands.json	/^      "-Wno-unused-function",$/;"	s	array:0.arguments
+11	compile_commands.json	/^      "-D_DEFAULT_SOURCE",$/;"	s	array:0.arguments
+12	compile_commands.json	/^      "-D_POSIX_C_SOURCE=200809L",$/;"	s	array:0.arguments
+13	compile_commands.json	/^      "-Os",$/;"	s	array:0.arguments
+14	compile_commands.json	/^      "main.c"$/;"	s	array:0.arguments
+2	compile_commands.json	/^      "-std=c11",$/;"	s	array:0.arguments
+3	compile_commands.json	/^      "-g",$/;"	s	array:0.arguments
+4	compile_commands.json	/^      "-Wall",$/;"	s	array:0.arguments
+5	compile_commands.json	/^      "-Wextra",$/;"	s	array:0.arguments
+6	compile_commands.json	/^      "-Wpedantic",$/;"	s	array:0.arguments
+7	compile_commands.json	/^      "-Wstrict-aliasing",$/;"	s	array:0.arguments
+8	compile_commands.json	/^      "-Wno-unused-parameter",$/;"	s	array:0.arguments
+9	compile_commands.json	/^      "-Wno-switch",$/;"	s	array:0.arguments
 BIN	makefile	/^BIN = .$/;"	m
 CC	makefile	/^CC = gcc$/;"	m
 CFLAGS	makefile	/^CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic -Wstrict-aliasing$/;"	m
 Goals	README.md	/^### Goals$/;"	S	chapter:YAWM
-INCS	makefile	/^INCS = -I$(X11INC)$/;"	m
-LDFLAGS	makefile	/^LDFLAGS = -lm$/;"	m
-LIBS	makefile	/^LIBS = -L$(X11LIB)$/;"	m
+LDFLAGS	makefile	/^LDFLAGS = -lm -lX11$/;"	m
 OBJ	makefile	/^OBJ = $(SRC:.c=.o)$/;"	m
 OS	makefile	/^OS = $(shell uname -s)$/;"	m
+Root	utils.h	/^typedef struct Root {$/;"	s
 SRC	makefile	/^SRC = $(wildcard .\/*.c)$/;"	m
 TARGET	makefile	/^TARGET = $(BIN)\/yawm$/;"	m
-X11INC	makefile	/^X11INC = \/usr\/X11R6\/include$/;"	m
-X11LIB	makefile	/^X11LIB = \/usr\/X11R6\/lib$/;"	m
+UTILS_H	utils.h	/^#define UTILS_H$/;"	d
 YAWM	README.md	/^# YAWM$/;"	c
 all	makefile	/^all: update_ctags yawm$/;"	t
+arguments	compile_commands.json	/^    "arguments": [$/;"	a	object:0
+clean	main.c	/^clean(void)$/;"	f	typeref:typename:internal void
 clean	makefile	/^clean:$/;"	t
+directory	compile_commands.json	/^    "directory": "\/home\/fonsi\/proyectos\/yawm",$/;"	s	object:0
+display	main.c	/^global Display* display;$/;"	v	typeref:typename:global Display *
+file	compile_commands.json	/^    "file": "\/home\/fonsi\/proyectos\/yawm\/main.c"$/;"	s	object:0
+global	utils.h	/^#define global /;"	d
+height	utils.h	/^        uint width, height;$/;"	m	struct:Root	typeref:typename:uint
+internal	utils.h	/^#define internal /;"	d
+layout	utils.h	/^        uint layout;$/;"	m	struct:Root	typeref:typename:uint
+loop	main.c	/^loop(void)$/;"	f	typeref:typename:internal void
 main	main.c	/^main(void)$/;"	f	typeref:typename:int
+root	main.c	/^global root_window* root;$/;"	v	typeref:typename:global root_window *
+root_window	utils.h	/^} root_window;$/;"	t	typeref:struct:Root
 run	makefile	/^run:$/;"	t
+screen	main.c	/^global int screen;$/;"	v	typeref:typename:global int
+start	main.c	/^start(void)$/;"	f	typeref:typename:internal void
+uint	utils.h	/^typedef unsigned int uint;$/;"	t	typeref:typename:unsigned int
 update_ctags	makefile	/^update_ctags:$/;"	t
+width	utils.h	/^        uint width, height;$/;"	m	struct:Root	typeref:typename:uint
+window	utils.h	/^        Window window;$/;"	m	struct:Root	typeref:typename:Window
+x	utils.h	/^        int x, y;$/;"	m	struct:Root	typeref:typename:int
+y	utils.h	/^        int x, y;$/;"	m	struct:Root	typeref:typename:int
 yawm	makefile	/^yawm: $(OBJ)$/;"	t
