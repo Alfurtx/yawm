@@ -4,62 +4,298 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
+!_TAG_PROC_CWD	/Users/alfonso/Desktop/Proyectos Personales/yawm/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
+!_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
 %.o	makefile	/^%.o: %.c$/;"	t
-0	compile_commands.json	/^      "\/usr\/bin\/gcc",$/;"	s	array:0.arguments
-0	compile_commands.json	/^  {$/;"	o
-1	compile_commands.json	/^      "-c",$/;"	s	array:0.arguments
-10	compile_commands.json	/^      "-Wno-unused-function",$/;"	s	array:0.arguments
-11	compile_commands.json	/^      "-D_DEFAULT_SOURCE",$/;"	s	array:0.arguments
-12	compile_commands.json	/^      "-D_POSIX_C_SOURCE=200809L",$/;"	s	array:0.arguments
-13	compile_commands.json	/^      "-Os",$/;"	s	array:0.arguments
-14	compile_commands.json	/^      "main.c"$/;"	s	array:0.arguments
-2	compile_commands.json	/^      "-std=c11",$/;"	s	array:0.arguments
-3	compile_commands.json	/^      "-g",$/;"	s	array:0.arguments
-4	compile_commands.json	/^      "-Wall",$/;"	s	array:0.arguments
-5	compile_commands.json	/^      "-Wextra",$/;"	s	array:0.arguments
-6	compile_commands.json	/^      "-Wpedantic",$/;"	s	array:0.arguments
-7	compile_commands.json	/^      "-Wstrict-aliasing",$/;"	s	array:0.arguments
-8	compile_commands.json	/^      "-Wno-unused-parameter",$/;"	s	array:0.arguments
-9	compile_commands.json	/^      "-Wno-switch",$/;"	s	array:0.arguments
 BIN	makefile	/^BIN = .$/;"	m
-CC	makefile	/^CC = gcc$/;"	m
+CC	makefile	/^CC = clang$/;"	m
 CFLAGS	makefile	/^CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic -Wstrict-aliasing$/;"	m
 Goals	README.md	/^### Goals$/;"	S	chapter:YAWM
+INCLUDE_STB_DS_H	stb_ds.h	/^#define INCLUDE_STB_DS_H$/;"	d
 LDFLAGS	makefile	/^LDFLAGS = -lm -lX11$/;"	m
 OBJ	makefile	/^OBJ = $(SRC:.c=.o)$/;"	m
 OS	makefile	/^OS = $(shell uname -s)$/;"	m
 Root	utils.h	/^typedef struct Root {$/;"	s
 SRC	makefile	/^SRC = $(wildcard .\/*.c)$/;"	m
+STBDS_ADDRESSOF	stb_ds.h	/^  #define STBDS_ADDRESSOF(/;"	d
+STBDS_ADDRESSOF	stb_ds.h	/^#define STBDS_ADDRESSOF(/;"	d
+STBDS_ALIGN_FWD	stb_ds.h	/^#define STBDS_ALIGN_FWD(/;"	d
+STBDS_ARR_TO_HASH	stb_ds.h	/^#define STBDS_ARR_TO_HASH(/;"	d
+STBDS_ASSERT	stb_ds.h	/^#define STBDS_ASSERT /;"	d
+STBDS_ASSERT	stb_ds.h	/^#define STBDS_ASSERT(/;"	d
+STBDS_ASSERT_WAS_UNDEFINED	stb_ds.h	/^#define STBDS_ASSERT_WAS_UNDEFINED$/;"	d
+STBDS_BUCKET_LENGTH	stb_ds.h	/^#define STBDS_BUCKET_LENGTH /;"	d
+STBDS_BUCKET_MASK	stb_ds.h	/^#define STBDS_BUCKET_MASK /;"	d
+STBDS_BUCKET_SHIFT	stb_ds.h	/^#define STBDS_BUCKET_SHIFT /;"	d
+STBDS_CACHE_LINE_SIZE	stb_ds.h	/^#define STBDS_CACHE_LINE_SIZE /;"	d
+STBDS_FREE	stb_ds.h	/^#define STBDS_FREE(/;"	d
+STBDS_HASH_DELETED	stb_ds.h	/^#define STBDS_HASH_DELETED /;"	d
+STBDS_HASH_EMPTY	stb_ds.h	/^#define STBDS_HASH_EMPTY /;"	d
+STBDS_HASH_TO_ARR	stb_ds.h	/^#define STBDS_HASH_TO_ARR(/;"	d
+STBDS_HAS_LITERAL_ARRAY	stb_ds.h	/^#define STBDS_HAS_LITERAL_ARRAY$/;"	d
+STBDS_HAS_TYPEOF	stb_ds.h	/^#define STBDS_HAS_TYPEOF$/;"	d
+STBDS_HM_BINARY	stb_ds.h	/^#define STBDS_HM_BINARY /;"	d
+STBDS_HM_STRING	stb_ds.h	/^#define STBDS_HM_STRING /;"	d
+STBDS_INDEX_DELETED	stb_ds.h	/^#define STBDS_INDEX_DELETED /;"	d
+STBDS_INDEX_EMPTY	stb_ds.h	/^#define STBDS_INDEX_EMPTY /;"	d
+STBDS_INDEX_IN_USE	stb_ds.h	/^#define STBDS_INDEX_IN_USE(/;"	d
+STBDS_NOTUSED	stb_ds.h	/^#define STBDS_NOTUSED(/;"	d
+STBDS_OFFSETOF	stb_ds.h	/^#define STBDS_OFFSETOF(/;"	d
+STBDS_REALLOC	stb_ds.h	/^#define STBDS_REALLOC(/;"	d
+STBDS_ROTATE_LEFT	stb_ds.h	/^#define STBDS_ROTATE_LEFT(/;"	d
+STBDS_ROTATE_RIGHT	stb_ds.h	/^#define STBDS_ROTATE_RIGHT(/;"	d
+STBDS_SH_ARENA	stb_ds.h	/^   STBDS_SH_ARENA$/;"	e	enum:__anon6a32dd7a0203
+STBDS_SH_DEFAULT	stb_ds.h	/^   STBDS_SH_DEFAULT,$/;"	e	enum:__anon6a32dd7a0203
+STBDS_SH_NONE	stb_ds.h	/^   STBDS_SH_NONE,$/;"	e	enum:__anon6a32dd7a0203
+STBDS_SH_STRDUP	stb_ds.h	/^   STBDS_SH_STRDUP,$/;"	e	enum:__anon6a32dd7a0203
+STBDS_SIPHASH_2_4_can_only_be_used_in_64_bit_builds	stb_ds.h	/^typedef int STBDS_SIPHASH_2_4_can_only_be_used_in_64_bit_builds[sizeof(size_t) == 8 ? 1 : -1];$/;"	t	typeref:typename:int[sizeof (size_t)==8?1:-1]
+STBDS_SIPHASH_C_ROUNDS	stb_ds.h	/^#define STBDS_SIPHASH_C_ROUNDS /;"	d
+STBDS_SIPHASH_D_ROUNDS	stb_ds.h	/^#define STBDS_SIPHASH_D_ROUNDS /;"	d
+STBDS_SIPROUND	stb_ds.h	/^  #define STBDS_SIPROUND(/;"	d
+STBDS_SIZE_T_BITS	stb_ds.h	/^#define STBDS_SIZE_T_BITS /;"	d
+STBDS_STATS	stb_ds.h	/^#define STBDS_STATS(/;"	d
+STBDS_STRING_ARENA_BLOCKSIZE_MAX	stb_ds.h	/^#define STBDS_STRING_ARENA_BLOCKSIZE_MAX /;"	d
+STBDS_STRING_ARENA_BLOCKSIZE_MIN	stb_ds.h	/^#define STBDS_STRING_ARENA_BLOCKSIZE_MIN /;"	d
+STB_DS_IMPLEMENTATION	stb_ds.c	/^#define STB_DS_IMPLEMENTATION$/;"	d	file:
 TARGET	makefile	/^TARGET = $(BIN)\/yawm$/;"	m
 UTILS_H	utils.h	/^#define UTILS_H$/;"	d
 YAWM	README.md	/^# YAWM$/;"	c
+_CRT_SECURE_NO_WARNINGS	stb_ds.h	/^#define _CRT_SECURE_NO_WARNINGS$/;"	d
+__anon6a32dd7a0108	stb_ds.h	/^{$/;"	s
+__anon6a32dd7a0203	stb_ds.h	/^{$/;"	g
+__anon6a32dd7a0308	stb_ds.h	/^{$/;"	s
+__anon6a32dd7a0408	stb_ds.h	/^{$/;"	s
+__anon6a32dd7a0508	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	s
+__anon6a32dd7a0608	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	s
 all	makefile	/^all: update_ctags yawm$/;"	t
-arguments	compile_commands.json	/^    "arguments": [$/;"	a	object:0
-clean	main.c	/^clean(void)$/;"	f	typeref:typename:internal void
+arraddn	stb_ds.h	/^#define arraddn /;"	d
+arraddnindex	stb_ds.h	/^#define arraddnindex /;"	d
+arraddnptr	stb_ds.h	/^#define arraddnptr /;"	d
+arrcap	stb_ds.h	/^#define arrcap /;"	d
+arrdel	stb_ds.h	/^#define arrdel /;"	d
+arrdeln	stb_ds.h	/^#define arrdeln /;"	d
+arrdelswap	stb_ds.h	/^#define arrdelswap /;"	d
+arrfree	stb_ds.h	/^#define arrfree /;"	d
+arrins	stb_ds.h	/^#define arrins /;"	d
+arrinsn	stb_ds.h	/^#define arrinsn /;"	d
+arrlast	stb_ds.h	/^#define arrlast /;"	d
+arrlen	stb_ds.h	/^#define arrlen /;"	d
+arrlenu	stb_ds.h	/^#define arrlenu /;"	d
+arrpop	stb_ds.h	/^#define arrpop /;"	d
+arrpush	stb_ds.h	/^#define arrpush /;"	d
+arrput	stb_ds.h	/^#define arrput /;"	d
+arrsetcap	stb_ds.h	/^#define arrsetcap /;"	d
+arrsetlen	stb_ds.h	/^#define arrsetlen /;"	d
+b	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
+b	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
+block	stb_ds.h	/^  unsigned char block;$/;"	m	struct:stbds_string_arena	typeref:typename:unsigned char
+buffer	stb_ds.h	/^static char buffer[256];$/;"	v	typeref:typename:char[256]
+c	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
+c	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
+capacity	stb_ds.h	/^  size_t      capacity;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:size_t
 clean	makefile	/^clean:$/;"	t
-directory	compile_commands.json	/^    "directory": "\/home\/fonsi\/proyectos\/yawm",$/;"	s	object:0
-display	main.c	/^global Display* display;$/;"	v	typeref:typename:global Display *
-file	compile_commands.json	/^    "file": "\/home\/fonsi\/proyectos\/yawm\/main.c"$/;"	s	object:0
+client_t	utils.h	/^typedef Window client_t;$/;"	t	typeref:typename:Window
+clients	main.c	/^global client_t clients; \/\/ TODO(fonsi): figure out if i need this$/;"	v	typeref:typename:global client_t
+configurerequest	main.c	/^configurerequest(XEvent* event)$/;"	f	typeref:typename:internal void
+d	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
+d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
+display	main.c	/^global Display*    display;$/;"	v	typeref:typename:global Display *
 global	utils.h	/^#define global /;"	d
-height	utils.h	/^        uint width, height;$/;"	m	struct:Root	typeref:typename:uint
+handler	main.c	/^internal void (*handler[LASTEvent])(XEvent*) = {$/;"	v	typeref:typename:internal void (* [LASTEvent])(XEvent *)
+hash	stb_ds.h	/^   size_t    hash [STBDS_BUCKET_LENGTH];$/;"	m	struct:__anon6a32dd7a0308	typeref:typename:size_t[]
+hash_table	stb_ds.h	/^  void      * hash_table;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:void *
+height	utils.h	/^        uint   width, height;$/;"	m	struct:Root	typeref:typename:uint
+hmdefault	stb_ds.h	/^#define hmdefault /;"	d
+hmdefaults	stb_ds.h	/^#define hmdefaults /;"	d
+hmdel	stb_ds.h	/^#define hmdel /;"	d
+hmfree	stb_ds.h	/^#define hmfree /;"	d
+hmget	stb_ds.h	/^#define hmget /;"	d
+hmget_ts	stb_ds.h	/^#define hmget_ts /;"	d
+hmgeti	stb_ds.h	/^#define hmgeti /;"	d
+hmgeti_ts	stb_ds.h	/^#define hmgeti_ts /;"	d
+hmgetp	stb_ds.h	/^#define hmgetp /;"	d
+hmgetp_null	stb_ds.h	/^#define hmgetp_null /;"	d
+hmgetp_ts	stb_ds.h	/^#define hmgetp_ts /;"	d
+hmgets	stb_ds.h	/^#define hmgets /;"	d
+hmlen	stb_ds.h	/^#define hmlen /;"	d
+hmlenu	stb_ds.h	/^#define hmlenu /;"	d
+hmput	stb_ds.h	/^#define hmput /;"	d
+hmputs	stb_ds.h	/^#define hmputs /;"	d
+index	stb_ds.h	/^   ptrdiff_t index[STBDS_BUCKET_LENGTH];$/;"	m	struct:__anon6a32dd7a0308	typeref:typename:ptrdiff_t[]
 internal	utils.h	/^#define internal /;"	d
-layout	utils.h	/^        uint layout;$/;"	m	struct:Root	typeref:typename:uint
+key	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
+key	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int[2]
+layout	utils.h	/^        uint   layout;$/;"	m	struct:Root	typeref:typename:uint
+length	stb_ds.h	/^  size_t      length;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:size_t
 loop	main.c	/^loop(void)$/;"	f	typeref:typename:internal void
 main	main.c	/^main(void)$/;"	f	typeref:typename:int
-root	main.c	/^global root_window* root;$/;"	v	typeref:typename:global root_window *
-root_window	utils.h	/^} root_window;$/;"	t	typeref:struct:Root
+maprequest	main.c	/^maprequest(XEvent* event)$/;"	f	typeref:typename:internal void
+mode	stb_ds.h	/^  unsigned char mode;  \/\/ this isn't used by the string arena itself$/;"	m	struct:stbds_string_arena	typeref:typename:unsigned char
+next	stb_ds.h	/^  struct stbds_string_block *next;$/;"	m	struct:stbds_string_block	typeref:struct:stbds_string_block *
+quit	main.c	/^global bool        quit;$/;"	v	typeref:typename:global bool
+remaining	stb_ds.h	/^  size_t remaining;$/;"	m	struct:stbds_string_arena	typeref:typename:size_t
+root	main.c	/^global root_t root;$/;"	v	typeref:typename:global root_t
+root_t	utils.h	/^} root_t;$/;"	t	typeref:struct:Root
 run	makefile	/^run:$/;"	t
-screen	main.c	/^global int screen;$/;"	v	typeref:typename:global int
+screen	main.c	/^global int         screen;$/;"	v	typeref:typename:global int
+seed	stb_ds.h	/^  size_t seed;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
+sh_new_arena	stb_ds.h	/^#define sh_new_arena /;"	d
+sh_new_strdup	stb_ds.h	/^#define sh_new_strdup /;"	d
+shdefault	stb_ds.h	/^#define shdefault /;"	d
+shdefaults	stb_ds.h	/^#define shdefaults /;"	d
+shdel	stb_ds.h	/^#define shdel /;"	d
+shfree	stb_ds.h	/^#define shfree /;"	d
+shget	stb_ds.h	/^#define shget /;"	d
+shgeti	stb_ds.h	/^#define shgeti /;"	d
+shgetp	stb_ds.h	/^#define shgetp /;"	d
+shgetp_null	stb_ds.h	/^#define shgetp_null /;"	d
+shgets	stb_ds.h	/^#define shgets /;"	d
+shlen	stb_ds.h	/^#define shlen /;"	d
+shlenu	stb_ds.h	/^#define shlenu /;"	d
+shput	stb_ds.h	/^#define shput /;"	d
+shputi	stb_ds.h	/^#define shputi /;"	d
+shputs	stb_ds.h	/^#define shputs /;"	d
+slot_count	stb_ds.h	/^  size_t slot_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
+slot_count_log2	stb_ds.h	/^  size_t slot_count_log2;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 start	main.c	/^start(void)$/;"	f	typeref:typename:internal void
+stbds_arraddn	stb_ds.h	/^#define stbds_arraddn(/;"	d
+stbds_arraddnindex	stb_ds.h	/^#define stbds_arraddnindex(/;"	d
+stbds_arraddnoff	stb_ds.h	/^#define stbds_arraddnoff /;"	d
+stbds_arraddnptr	stb_ds.h	/^#define stbds_arraddnptr(/;"	d
+stbds_array_grow	stb_ds.h	/^size_t stbds_array_grow;$/;"	v	typeref:typename:size_t
+stbds_array_header	stb_ds.h	/^} stbds_array_header;$/;"	t	typeref:struct:__anon6a32dd7a0108
+stbds_arrcap	stb_ds.h	/^#define stbds_arrcap(/;"	d
+stbds_arrdel	stb_ds.h	/^#define stbds_arrdel(/;"	d
+stbds_arrdeln	stb_ds.h	/^#define stbds_arrdeln(/;"	d
+stbds_arrdelswap	stb_ds.h	/^#define stbds_arrdelswap(/;"	d
+stbds_arrfree	stb_ds.h	/^#define stbds_arrfree(/;"	d
+stbds_arrfreef	stb_ds.h	/^void stbds_arrfreef(void *a)$/;"	f	typeref:typename:void
+stbds_arrgrow	stb_ds.h	/^#define stbds_arrgrow(/;"	d
+stbds_arrgrowf	stb_ds.h	/^void *stbds_arrgrowf(void *a, size_t elemsize, size_t addlen, size_t min_cap)$/;"	f	typeref:typename:void *
+stbds_arrgrowf_wrapper	stb_ds.h	/^#define stbds_arrgrowf_wrapper /;"	d
+stbds_arrgrowf_wrapper	stb_ds.h	/^template<class T> static T * stbds_arrgrowf_wrapper(T *a, size_t elemsize, size_t addlen, size_t/;"	f	typeref:typename:T *
+stbds_arrins	stb_ds.h	/^#define stbds_arrins(/;"	d
+stbds_arrinsn	stb_ds.h	/^#define stbds_arrinsn(/;"	d
+stbds_arrlast	stb_ds.h	/^#define stbds_arrlast(/;"	d
+stbds_arrlen	stb_ds.h	/^#define stbds_arrlen(/;"	d
+stbds_arrlenu	stb_ds.h	/^#define stbds_arrlenu(/;"	d
+stbds_arrmaybegrow	stb_ds.h	/^#define stbds_arrmaybegrow(/;"	d
+stbds_arrpop	stb_ds.h	/^#define stbds_arrpop(/;"	d
+stbds_arrpush	stb_ds.h	/^#define stbds_arrpush /;"	d
+stbds_arrput	stb_ds.h	/^#define stbds_arrput(/;"	d
+stbds_arrsetcap	stb_ds.h	/^#define stbds_arrsetcap(/;"	d
+stbds_arrsetlen	stb_ds.h	/^#define stbds_arrsetlen(/;"	d
+stbds_hash_alloc	stb_ds.h	/^size_t stbds_hash_alloc;$/;"	v	typeref:typename:size_t
+stbds_hash_bucket	stb_ds.h	/^} stbds_hash_bucket; \/\/ in 32-bit, this is one 64-byte cache line; in 64-bit, each array is on/;"	t	typeref:struct:__anon6a32dd7a0308
+stbds_hash_bytes	stb_ds.h	/^size_t stbds_hash_bytes(void *p, size_t len, size_t seed)$/;"	f	typeref:typename:size_t
+stbds_hash_grow	stb_ds.h	/^size_t stbds_hash_grow;$/;"	v	typeref:typename:size_t
+stbds_hash_index	stb_ds.h	/^} stbds_hash_index;$/;"	t	typeref:struct:__anon6a32dd7a0408
+stbds_hash_probes	stb_ds.h	/^size_t stbds_hash_probes;$/;"	v	typeref:typename:size_t
+stbds_hash_rebuild	stb_ds.h	/^size_t stbds_hash_rebuild;$/;"	v	typeref:typename:size_t
+stbds_hash_seed	stb_ds.h	/^static size_t stbds_hash_seed=0x31415926;$/;"	v	typeref:typename:size_t
+stbds_hash_shrink	stb_ds.h	/^size_t stbds_hash_shrink;$/;"	v	typeref:typename:size_t
+stbds_hash_string	stb_ds.h	/^size_t stbds_hash_string(char *str, size_t seed)$/;"	f	typeref:typename:size_t
+stbds_hash_table	stb_ds.h	/^#define stbds_hash_table(/;"	d
+stbds_header	stb_ds.h	/^#define stbds_header(/;"	d
+stbds_hm_find_slot	stb_ds.h	/^static ptrdiff_t stbds_hm_find_slot(void *a, size_t elemsize, void *key, size_t keysize, size_t /;"	f	typeref:typename:ptrdiff_t
+stbds_hmdefault	stb_ds.h	/^#define stbds_hmdefault(/;"	d
+stbds_hmdefaults	stb_ds.h	/^#define stbds_hmdefaults(/;"	d
+stbds_hmdel	stb_ds.h	/^#define stbds_hmdel(/;"	d
+stbds_hmdel_key	stb_ds.h	/^void * stbds_hmdel_key(void *a, size_t elemsize, void *key, size_t keysize, size_t keyoffset, in/;"	f	typeref:typename:void *
+stbds_hmdel_key_wrapper	stb_ds.h	/^#define stbds_hmdel_key_wrapper /;"	d
+stbds_hmdel_key_wrapper	stb_ds.h	/^template<class T> static T * stbds_hmdel_key_wrapper(T *a, size_t elemsize, void *key, size_t ke/;"	f	typeref:typename:T *
+stbds_hmfree	stb_ds.h	/^#define stbds_hmfree(/;"	d
+stbds_hmfree_func	stb_ds.h	/^void stbds_hmfree_func(void *a, size_t elemsize)$/;"	f	typeref:typename:void
+stbds_hmget	stb_ds.h	/^#define stbds_hmget(/;"	d
+stbds_hmget_key	stb_ds.h	/^void * stbds_hmget_key(void *a, size_t elemsize, void *key, size_t keysize, int mode)$/;"	f	typeref:typename:void *
+stbds_hmget_key_ts	stb_ds.h	/^void * stbds_hmget_key_ts(void *a, size_t elemsize, void *key, size_t keysize, ptrdiff_t *temp, /;"	f	typeref:typename:void *
+stbds_hmget_key_ts_wrapper	stb_ds.h	/^#define stbds_hmget_key_ts_wrapper /;"	d
+stbds_hmget_key_ts_wrapper	stb_ds.h	/^template<class T> static T * stbds_hmget_key_ts_wrapper(T *a, size_t elemsize, void *key, size_t/;"	f	typeref:typename:T *
+stbds_hmget_key_wrapper	stb_ds.h	/^#define stbds_hmget_key_wrapper /;"	d
+stbds_hmget_key_wrapper	stb_ds.h	/^template<class T> static T * stbds_hmget_key_wrapper(T *a, size_t elemsize, void *key, size_t ke/;"	f	typeref:typename:T *
+stbds_hmget_ts	stb_ds.h	/^#define stbds_hmget_ts(/;"	d
+stbds_hmgeti	stb_ds.h	/^#define stbds_hmgeti(/;"	d
+stbds_hmgeti_ts	stb_ds.h	/^#define stbds_hmgeti_ts(/;"	d
+stbds_hmgetp	stb_ds.h	/^#define stbds_hmgetp(/;"	d
+stbds_hmgetp_null	stb_ds.h	/^#define stbds_hmgetp_null(/;"	d
+stbds_hmgetp_ts	stb_ds.h	/^#define stbds_hmgetp_ts(/;"	d
+stbds_hmgets	stb_ds.h	/^#define stbds_hmgets(/;"	d
+stbds_hmlen	stb_ds.h	/^#define stbds_hmlen(/;"	d
+stbds_hmlenu	stb_ds.h	/^#define stbds_hmlenu(/;"	d
+stbds_hmput	stb_ds.h	/^#define stbds_hmput(/;"	d
+stbds_hmput_default	stb_ds.h	/^void * stbds_hmput_default(void *a, size_t elemsize)$/;"	f	typeref:typename:void *
+stbds_hmput_default_wrapper	stb_ds.h	/^#define stbds_hmput_default_wrapper /;"	d
+stbds_hmput_default_wrapper	stb_ds.h	/^template<class T> static T * stbds_hmput_default_wrapper(T *a, size_t elemsize) {$/;"	f	typeref:typename:T *
+stbds_hmput_key	stb_ds.h	/^void *stbds_hmput_key(void *a, size_t elemsize, void *key, size_t keysize, int mode)$/;"	f	typeref:typename:void *
+stbds_hmput_key_wrapper	stb_ds.h	/^#define stbds_hmput_key_wrapper /;"	d
+stbds_hmput_key_wrapper	stb_ds.h	/^template<class T> static T * stbds_hmput_key_wrapper(T *a, size_t elemsize, void *key, size_t ke/;"	f	typeref:typename:T *
+stbds_hmputs	stb_ds.h	/^#define stbds_hmputs(/;"	d
+stbds_is_key_equal	stb_ds.h	/^static int stbds_is_key_equal(void *a, size_t elemsize, void *key, size_t keysize, size_t keyoff/;"	f	typeref:typename:int
+stbds_load_32_or_64	stb_ds.h	/^#define stbds_load_32_or_64(/;"	d
+stbds_log2	stb_ds.h	/^static size_t stbds_log2(size_t slot_count)$/;"	f	typeref:typename:size_t
+stbds_make_hash_index	stb_ds.h	/^static stbds_hash_index *stbds_make_hash_index(size_t slot_count, stbds_hash_index *ot)$/;"	f	typeref:typename:stbds_hash_index *
+stbds_probe_position	stb_ds.h	/^static size_t stbds_probe_position(size_t hash, size_t slot_count, size_t slot_log2)$/;"	f	typeref:typename:size_t
+stbds_pshdel	stb_ds.h	/^#define stbds_pshdel(/;"	d
+stbds_pshget	stb_ds.h	/^#define stbds_pshget(/;"	d
+stbds_pshgeti	stb_ds.h	/^#define stbds_pshgeti(/;"	d
+stbds_pshput	stb_ds.h	/^#define stbds_pshput(/;"	d
+stbds_rand_seed	stb_ds.h	/^void stbds_rand_seed(size_t seed)$/;"	f	typeref:typename:void
+stbds_rehash_items	stb_ds.h	/^size_t stbds_rehash_items;$/;"	v	typeref:typename:size_t
+stbds_rehash_probes	stb_ds.h	/^size_t stbds_rehash_probes;$/;"	v	typeref:typename:size_t
+stbds_sh_new_arena	stb_ds.h	/^#define stbds_sh_new_arena(/;"	d
+stbds_sh_new_strdup	stb_ds.h	/^#define stbds_sh_new_strdup(/;"	d
+stbds_shdefault	stb_ds.h	/^#define stbds_shdefault(/;"	d
+stbds_shdefaults	stb_ds.h	/^#define stbds_shdefaults(/;"	d
+stbds_shdel	stb_ds.h	/^#define stbds_shdel(/;"	d
+stbds_shfree	stb_ds.h	/^#define stbds_shfree /;"	d
+stbds_shget	stb_ds.h	/^#define stbds_shget(/;"	d
+stbds_shgeti	stb_ds.h	/^#define stbds_shgeti(/;"	d
+stbds_shgetp	stb_ds.h	/^#define stbds_shgetp(/;"	d
+stbds_shgetp_null	stb_ds.h	/^#define stbds_shgetp_null(/;"	d
+stbds_shgets	stb_ds.h	/^#define stbds_shgets(/;"	d
+stbds_shlen	stb_ds.h	/^#define stbds_shlen /;"	d
+stbds_shlenu	stb_ds.h	/^#define stbds_shlenu /;"	d
+stbds_shmode_func	stb_ds.h	/^void * stbds_shmode_func(size_t elemsize, int mode)$/;"	f	typeref:typename:void *
+stbds_shmode_func_wrapper	stb_ds.h	/^#define stbds_shmode_func_wrapper(/;"	d
+stbds_shmode_func_wrapper	stb_ds.h	/^template<class T> static T * stbds_shmode_func_wrapper(T *, size_t elemsize, int mode) {$/;"	f	typeref:typename:T *
+stbds_shput	stb_ds.h	/^#define stbds_shput(/;"	d
+stbds_shputi	stb_ds.h	/^#define stbds_shputi(/;"	d
+stbds_shputs	stb_ds.h	/^#define stbds_shputs(/;"	d
+stbds_siphash_bytes	stb_ds.h	/^static size_t stbds_siphash_bytes(void *p, size_t len, size_t seed)$/;"	f	typeref:typename:size_t
+stbds_stralloc	stb_ds.h	/^char *stbds_stralloc(stbds_string_arena *a, char *str)$/;"	f	typeref:typename:char *
+stbds_strdup	stb_ds.h	/^static char *stbds_strdup(char *str)$/;"	f	typeref:typename:char *
+stbds_string_arena	stb_ds.h	/^struct stbds_string_arena$/;"	s
+stbds_string_arena	stb_ds.h	/^typedef struct stbds_string_arena stbds_string_arena;$/;"	t	typeref:struct:stbds_string_arena
+stbds_string_block	stb_ds.h	/^typedef struct stbds_string_block$/;"	s
+stbds_string_block	stb_ds.h	/^} stbds_string_block;$/;"	t	typeref:struct:stbds_string_block
+stbds_strreset	stb_ds.h	/^void stbds_strreset(stbds_string_arena *a)$/;"	f	typeref:typename:void
+stbds_struct	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	t	typeref:struct:__anon6a32dd7a0508
+stbds_struct2	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	t	typeref:struct:__anon6a32dd7a0608
+stbds_temp	stb_ds.h	/^#define stbds_temp(/;"	d
+stbds_temp_key	stb_ds.h	/^#define stbds_temp_key(/;"	d
+stbds_unit_tests	stb_ds.h	/^void stbds_unit_tests(void)$/;"	f	typeref:typename:void
+storage	stb_ds.h	/^  char storage[8];$/;"	m	struct:stbds_string_block	typeref:typename:char[8]
+storage	stb_ds.h	/^  stbds_hash_bucket *storage; \/\/ not a separate allocation, just 64-byte aligned storage after/;"	m	struct:__anon6a32dd7a0408	typeref:typename:stbds_hash_bucket *
+storage	stb_ds.h	/^  stbds_string_block *storage;$/;"	m	struct:stbds_string_arena	typeref:typename:stbds_string_block *
+stralloc	stb_ds.h	/^#define stralloc /;"	d
+string	stb_ds.h	/^  stbds_string_arena string;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:stbds_string_arena
+strkey	stb_ds.h	/^char *strkey(int n)$/;"	f	typeref:typename:char *
+strreset	stb_ds.h	/^#define strreset /;"	d
+temp	stb_ds.h	/^  ptrdiff_t   temp;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:ptrdiff_t
+temp_key	stb_ds.h	/^  char * temp_key; \/\/ this MUST be the first field of the hash table$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:char *
+tombstone_count	stb_ds.h	/^  size_t tombstone_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
+tombstone_count_threshold	stb_ds.h	/^  size_t tombstone_count_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 uint	utils.h	/^typedef unsigned int uint;$/;"	t	typeref:typename:unsigned int
+unmapnotify	main.c	/^unmapnotify(XEvent* event)$/;"	f	typeref:typename:internal void
 update_ctags	makefile	/^update_ctags:$/;"	t
-width	utils.h	/^        uint width, height;$/;"	m	struct:Root	typeref:typename:uint
+used_count	stb_ds.h	/^  size_t used_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
+used_count_shrink_threshold	stb_ds.h	/^  size_t used_count_shrink_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
+used_count_threshold	stb_ds.h	/^  size_t used_count_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
+width	utils.h	/^        uint   width, height;$/;"	m	struct:Root	typeref:typename:uint
 window	utils.h	/^        Window window;$/;"	m	struct:Root	typeref:typename:Window
-x	utils.h	/^        int x, y;$/;"	m	struct:Root	typeref:typename:int
-y	utils.h	/^        int x, y;$/;"	m	struct:Root	typeref:typename:int
+x	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
+y	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
 yawm	makefile	/^yawm: $(OBJ)$/;"	t

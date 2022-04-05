@@ -13,10 +13,6 @@
 #define internal static
 #define global   static
 
-enum LayoutType {
-        TILING = 0
-};
-
 typedef unsigned int uint;
 
 typedef struct Root {
@@ -24,11 +20,8 @@ typedef struct Root {
         int    x, y;
         uint   width, height;
         uint   layout;
-} root_window;
+} root_t;
 
-typedef struct Layout {
-        enum LayoutType type;
-        Window* clients;
-} Layout;
+typedef Window client_t;
 
 #endif
