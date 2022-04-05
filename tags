@@ -4,11 +4,11 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/Users/alfonso/Desktop/Proyectos Personales/yawm/	//
+!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
 %.o	makefile	/^%.o: %.c$/;"	t
 BIN	makefile	/^BIN = .$/;"	m
 CC	makefile	/^CC = clang$/;"	m
@@ -96,13 +96,14 @@ buffer	stb_ds.h	/^static char buffer[256];$/;"	v	typeref:typename:char[256]
 c	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
 c	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
 capacity	stb_ds.h	/^  size_t      capacity;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:size_t
+checkotherwm	main.c	/^checkotherwm(void)$/;"	f	typeref:typename:internal void
+clean	main.c	/^clean(void)$/;"	f	typeref:typename:internal void
 clean	makefile	/^clean:$/;"	t
 client_t	utils.h	/^typedef Window client_t;$/;"	t	typeref:typename:Window
-clients	main.c	/^global client_t clients; \/\/ TODO(fonsi): figure out if i need this$/;"	v	typeref:typename:global client_t
-configurerequest	main.c	/^configurerequest(XEvent* event)$/;"	f	typeref:typename:internal void
 d	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
 d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
-display	main.c	/^global Display*    display;$/;"	v	typeref:typename:global Display *
+die	main.c	/^die(char* msg, int errorcode)$/;"	f	typeref:typename:internal void
+display	main.c	/^global Display* display;$/;"	v	typeref:typename:global Display *
 global	utils.h	/^#define global /;"	d
 handler	main.c	/^internal void (*handler[LASTEvent])(XEvent*) = {$/;"	v	typeref:typename:internal void (* [LASTEvent])(XEvent *)
 hash	stb_ds.h	/^   size_t    hash [STBDS_BUCKET_LENGTH];$/;"	m	struct:__anon6a32dd7a0308	typeref:typename:size_t[]
@@ -135,12 +136,12 @@ main	main.c	/^main(void)$/;"	f	typeref:typename:int
 maprequest	main.c	/^maprequest(XEvent* event)$/;"	f	typeref:typename:internal void
 mode	stb_ds.h	/^  unsigned char mode;  \/\/ this isn't used by the string arena itself$/;"	m	struct:stbds_string_arena	typeref:typename:unsigned char
 next	stb_ds.h	/^  struct stbds_string_block *next;$/;"	m	struct:stbds_string_block	typeref:struct:stbds_string_block *
-quit	main.c	/^global bool        quit;$/;"	v	typeref:typename:global bool
+quit	main.c	/^global bool     quit;$/;"	v	typeref:typename:global bool
 remaining	stb_ds.h	/^  size_t remaining;$/;"	m	struct:stbds_string_arena	typeref:typename:size_t
-root	main.c	/^global root_t root;$/;"	v	typeref:typename:global root_t
+root	main.c	/^global root_t   root;$/;"	v	typeref:typename:global root_t
 root_t	utils.h	/^} root_t;$/;"	t	typeref:struct:Root
 run	makefile	/^run:$/;"	t
-screen	main.c	/^global int         screen;$/;"	v	typeref:typename:global int
+screen	main.c	/^global int      screen;$/;"	v	typeref:typename:global int
 seed	stb_ds.h	/^  size_t seed;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 sh_new_arena	stb_ds.h	/^#define sh_new_arena /;"	d
 sh_new_strdup	stb_ds.h	/^#define sh_new_strdup /;"	d
@@ -297,5 +298,6 @@ used_count_threshold	stb_ds.h	/^  size_t used_count_threshold;$/;"	m	struct:__an
 width	utils.h	/^        uint   width, height;$/;"	m	struct:Root	typeref:typename:uint
 window	utils.h	/^        Window window;$/;"	m	struct:Root	typeref:typename:Window
 x	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
+xiniterror	main.c	/^xiniterror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
 y	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
 yawm	makefile	/^yawm: $(OBJ)$/;"	t

@@ -41,4 +41,4 @@ clean:
 	rm -f $(TARGET) $(OBJ)
 
 run:
-	@$(TARGET)
+	@$(TARGET) || true
