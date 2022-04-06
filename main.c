@@ -1,10 +1,11 @@
 #include "utils.h"
 
-global int      screen;
-global Display* display;
-global bool     quit;
-global root_t   root;
-global bool windowtest = false;
+global int       screen;
+global Display*  display;
+global bool      quit;
+global root_t    root;
+global bool      windowtest = false;
+global monitor_t monitor;
 
 // TODO(fonsi): figure out if i need this
 // global client_t clients;
@@ -15,6 +16,7 @@ internal void loop(void);
 internal void die(char* msg, int errorcode);
 internal void checkotherwm(void);
 internal void spawn(arg_t args);
+internal void rearrange(void);
 
 internal void testwindow(void);
 
@@ -24,21 +26,23 @@ internal int xiniterror(Display* display, XErrorEvent* error);
 internal void configurerequest(XEvent* event);
 internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
-internal void resizerequest(XEvent* event);
 internal void keypress(XEvent* event);
-
 internal void (*handler[LASTEvent])(XEvent*) = {
-    // [ConfigureRequest] = configurerequest,
+    [ConfigureRequest] = configurerequest,
     [MapRequest]       = maprequest,
     [UnmapNotify]      = unmapnotify,
-    // [ResizeRequest]    = resizerequest,
     [KeyPress]         = keypress,
 };
 
 #include "config.h"
 
-#define MODMASK(mask) (mask & (ShiftMask|LockMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
 #define ARRLEN(arr) (sizeof(arr) / sizeof(arr[0]))
+#define WINDOWMASKS                                                                                \
+        (SubstructureRedirectMask | SubstructureNotifyMask | KeyPressMask | KeyReleaseMask |       \
+         PointerMotionMask)
+#define MODMASK(mask)                                                                              \
+        (mask & (ShiftMask | LockMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |  \
+                 Mod5Mask))
 
 int
 main(void)
@@ -61,14 +65,17 @@ start(void)
 
         checkotherwm();
 
-        XSelectInput(display, root.window, SubstructureRedirectMask | SubstructureNotifyMask);
+        monitor.root    = &root;
+        monitor.clients = NULL;
+
+        XSelectInput(display, root.window, WINDOWMASKS);
 }
 
 internal void
 loop(void)
 {
         XEvent e;
-        while (!XNextEvent(display, &e) && !quit) {
+        while (!quit && !XNextEvent(display, &e)) {
                 if (handler[e.type])
                         handler[e.type](&e);
         }
@@ -85,6 +92,7 @@ maprequest(XEvent* event)
 {
         XMapRequestEvent* ev = (XMapRequestEvent*) event;
         XMapWindow(display, ev->window);
+        arrput(monitor.clients, ev->window);
 }
 
 internal void
@@ -92,6 +100,12 @@ unmapnotify(XEvent* event)
 {
         XUnmapEvent* ev = &event->xunmap;
         XUnmapWindow(display, ev->window);
+
+        for (uint i = 0; i < arrlenu(monitor.clients); i++) {
+                if (monitor.clients[i] == ev->window) {
+                        arrdel(monitor.clients, i);
+                }
+        }
 }
 
 internal int
@@ -127,23 +141,21 @@ internal int
 xerror(Display* display, XErrorEvent* error)
 {
         die("", error->error_code);
-        return(EXIT_SUCCESS);
+        return (EXIT_SUCCESS);
 }
 
 internal void
 keypress(XEvent* event)
 {
-        XKeyPressedEvent* ev = (XKeyPressedEvent *) event;
-        KeySym keysym = XLookupKeysym(ev, 0);
+        XKeyPressedEvent* ev     = (XKeyPressedEvent*) event;
+        KeySym            keysym = XLookupKeysym(ev, 0);
 
-        if(keysym == XK_Escape && windowtest)
+        // TODO(fonsi): remove when finished with the basic setup
+        if (keysym == XK_Escape && windowtest)
                 quit = 1;
 
-        for(uint i = 0; i < ARRLEN(keys); i++)
-        {
-                if(keys[i].keysym == keysym &&
-                   MODMASK(keys[i].modifiers) == MODMASK(ev->state))
-                {
+        for (uint i = 0; i < ARRLEN(keys); i++) {
+                if (keys[i].keysym == keysym && MODMASK(keys[i].modifiers) == MODMASK(ev->state)) {
                         keys[i].func(keys[i].arguments);
                 }
         }
@@ -152,10 +164,9 @@ keypress(XEvent* event)
 internal void
 spawn(arg_t args)
 {
-        if(fork() == 0)
-        {
+        if (fork() == 0) {
                 setsid();
-                execvp(((const char **)args.v)[0],(char **) args.v);
+                execvp(((const char**) args.v)[0], (char**) args.v);
                 perror("execvp");
                 exit(EXIT_FAILURE);
         }
@@ -166,8 +177,8 @@ internal void
 testwindow(void)
 {
         windowtest = true;
-        display = XOpenDisplay(NULL);
-        screen  = XDefaultScreen(display);
+        display    = XOpenDisplay(NULL);
+        screen     = XDefaultScreen(display);
 
         root.window = XDefaultRootWindow(display);
         root.x      = 0;
@@ -178,24 +189,45 @@ testwindow(void)
         XWindowAttributes attrs;
         XGetWindowAttributes(display, root.window, &attrs);
 
-        const Window frame = XCreateSimpleWindow(
-                display,
-                root.window,
-                attrs.x,
-                attrs.y,
-                attrs.width,
-                attrs.height,
-                2,
-                0xff0000,
-                0x0000ff);
+        const Window frame = XCreateSimpleWindow(display,
+                                                 root.window,
+                                                 attrs.x,
+                                                 attrs.y,
+                                                 attrs.width,
+                                                 attrs.height,
+                                                 30,
+                                                 0xff0000,
+                                                 0xff0000);
 
+        XSelectInput(display, frame, KeyPressMask);
         XMapWindow(display, frame);
+        XSync(display, frame);
 
         loop();
-
-        XSync(display, frame);
 
         XUnmapWindow(display, frame);
         XDestroyWindow(display, frame);
         clean();
+}
+
+internal void
+rearrange(void)
+{
+        uint              size = arrlenu(monitor.clients);
+        XWindowChanges    changes;
+        XWindowAttributes wa;
+
+        XGetWindowAttributes(display, monitor.root->window, &wa);
+
+        if (size > 0) {
+                for (uint i = 0; i < size; i++) {
+                        if (i == 0) {
+                        }
+                }
+        }
+}
+
+internal void
+configurerequest(XEvent* event)
+{
 }

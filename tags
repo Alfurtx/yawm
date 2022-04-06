@@ -4,11 +4,11 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/Users/alfonso/Desktop/Proyectos Personales/yawm/	//
+!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
 %.o	makefile	/^%.o: %.c$/;"	t
 ALT	config.h	/^#define ALT /;"	d
 ARRLEN	main.c	/^#define ARRLEN(/;"	d	file:
@@ -23,6 +23,7 @@ INCLUDE_STB_DS_H	stb_ds.h	/^#define INCLUDE_STB_DS_H$/;"	d
 Key	utils.h	/^typedef struct Key {$/;"	s
 LDFLAGS	makefile	/^LDFLAGS = -lm -lX11$/;"	m
 MODMASK	main.c	/^#define MODMASK(/;"	d	file:
+Monitor	utils.h	/^typedef struct Monitor {$/;"	s
 OBJ	makefile	/^OBJ = $(SRC:.c=.o)$/;"	m
 OS	makefile	/^OS = $(shell uname -s)$/;"	m
 Root	utils.h	/^typedef struct Root {$/;"	s
@@ -68,8 +69,10 @@ STBDS_STATS	stb_ds.h	/^#define STBDS_STATS(/;"	d
 STBDS_STRING_ARENA_BLOCKSIZE_MAX	stb_ds.h	/^#define STBDS_STRING_ARENA_BLOCKSIZE_MAX /;"	d
 STBDS_STRING_ARENA_BLOCKSIZE_MIN	stb_ds.h	/^#define STBDS_STRING_ARENA_BLOCKSIZE_MIN /;"	d
 STB_DS_IMPLEMENTATION	stb_ds.c	/^#define STB_DS_IMPLEMENTATION$/;"	d	file:
+SUPER	config.h	/^#define SUPER /;"	d
 TARGET	makefile	/^TARGET = $(BIN)\/yawm$/;"	m
 UTILS_H	utils.h	/^#define UTILS_H$/;"	d
+WINDOWMASKS	main.c	/^#define WINDOWMASKS /;"	d	file:
 YAWM	README.md	/^# YAWM$/;"	c
 _CRT_SECURE_NO_WARNINGS	stb_ds.h	/^#define _CRT_SECURE_NO_WARNINGS$/;"	d
 __anon6a32dd7a0108	stb_ds.h	/^{$/;"	s
@@ -110,10 +113,12 @@ checkotherwm	main.c	/^checkotherwm(void)$/;"	f	typeref:typename:internal void
 clean	main.c	/^clean(void)$/;"	f	typeref:typename:internal void
 clean	makefile	/^clean:$/;"	t
 client_t	utils.h	/^typedef Window client_t;$/;"	t	typeref:typename:Window
+clients	utils.h	/^        client_t* clients;$/;"	m	struct:Monitor	typeref:typename:client_t *
+configurerequest	main.c	/^configurerequest(XEvent* event)$/;"	f	typeref:typename:internal void
 d	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
 d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
 die	main.c	/^die(char* msg, int errorcode)$/;"	f	typeref:typename:internal void
-display	main.c	/^global Display* display;$/;"	v	typeref:typename:global Display *
+display	main.c	/^global Display*  display;$/;"	v	typeref:typename:global Display *
 func	utils.h	/^        void (*func)(arg_t args);$/;"	m	struct:Key	typeref:typename:void (*)(arg_t args)
 global	utils.h	/^#define global /;"	d
 handler	main.c	/^internal void (*handler[LASTEvent])(XEvent*) = {$/;"	v	typeref:typename:internal void (* [LASTEvent])(XEvent *)
@@ -150,14 +155,18 @@ loop	main.c	/^loop(void)$/;"	f	typeref:typename:internal void
 main	main.c	/^main(void)$/;"	f	typeref:typename:int
 maprequest	main.c	/^maprequest(XEvent* event)$/;"	f	typeref:typename:internal void
 mode	stb_ds.h	/^  unsigned char mode;  \/\/ this isn't used by the string arena itself$/;"	m	struct:stbds_string_arena	typeref:typename:unsigned char
-modifiers	utils.h	/^        uint modifiers;$/;"	m	struct:Key	typeref:typename:uint
+modifiers	utils.h	/^        uint   modifiers;$/;"	m	struct:Key	typeref:typename:uint
+monitor	main.c	/^global monitor_t monitor;$/;"	v	typeref:typename:global monitor_t
+monitor_t	utils.h	/^} monitor_t;$/;"	t	typeref:struct:Monitor
 next	stb_ds.h	/^  struct stbds_string_block *next;$/;"	m	struct:stbds_string_block	typeref:struct:stbds_string_block *
-quit	main.c	/^global bool     quit;$/;"	v	typeref:typename:global bool
+quit	main.c	/^global bool      quit;$/;"	v	typeref:typename:global bool
+rearrange	main.c	/^rearrange(void)$/;"	f	typeref:typename:internal void
 remaining	stb_ds.h	/^  size_t remaining;$/;"	m	struct:stbds_string_arena	typeref:typename:size_t
-root	main.c	/^global root_t   root;$/;"	v	typeref:typename:global root_t
+root	main.c	/^global root_t    root;$/;"	v	typeref:typename:global root_t
+root	utils.h	/^        root_t*   root;$/;"	m	struct:Monitor	typeref:typename:root_t *
 root_t	utils.h	/^} root_t;$/;"	t	typeref:struct:Root
 run	makefile	/^run:$/;"	t
-screen	main.c	/^global int      screen;$/;"	v	typeref:typename:global int
+screen	main.c	/^global int       screen;$/;"	v	typeref:typename:global int
 seed	stb_ds.h	/^  size_t seed;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 sh_new_arena	stb_ds.h	/^#define sh_new_arena /;"	d
 sh_new_strdup	stb_ds.h	/^#define sh_new_strdup /;"	d
@@ -298,13 +307,13 @@ stbds_unit_tests	stb_ds.h	/^void stbds_unit_tests(void)$/;"	f	typeref:typename:v
 storage	stb_ds.h	/^  char storage[8];$/;"	m	struct:stbds_string_block	typeref:typename:char[8]
 storage	stb_ds.h	/^  stbds_hash_bucket *storage; \/\/ not a separate allocation, just 64-byte aligned storage after/;"	m	struct:__anon6a32dd7a0408	typeref:typename:stbds_hash_bucket *
 storage	stb_ds.h	/^  stbds_string_block *storage;$/;"	m	struct:stbds_string_arena	typeref:typename:stbds_string_block *
-str	utils.h	/^        char* str;$/;"	m	union:Arguments	typeref:typename:char *
 stralloc	stb_ds.h	/^#define stralloc /;"	d
 string	stb_ds.h	/^  stbds_string_arena string;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:stbds_string_arena
 strkey	stb_ds.h	/^char *strkey(int n)$/;"	f	typeref:typename:char *
 strreset	stb_ds.h	/^#define strreset /;"	d
 temp	stb_ds.h	/^  ptrdiff_t   temp;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:ptrdiff_t
 temp_key	stb_ds.h	/^  char * temp_key; \/\/ this MUST be the first field of the hash table$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:char *
+term	config.h	/^const char* term[] = {"alacritty", NULL};$/;"	v	typeref:typename:const char * []
 term	config.h	/^const char* term[] = {"open", "-a", "iterm", NULL};$/;"	v	typeref:typename:const char * []
 testwindow	main.c	/^testwindow(void)$/;"	f	typeref:typename:internal void
 tombstone_count	stb_ds.h	/^  size_t tombstone_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
@@ -318,7 +327,7 @@ used_count_threshold	stb_ds.h	/^  size_t used_count_threshold;$/;"	m	struct:__an
 v	utils.h	/^        const void* v;$/;"	m	union:Arguments	typeref:typename:const void *
 width	utils.h	/^        uint   width, height;$/;"	m	struct:Root	typeref:typename:uint
 window	utils.h	/^        Window window;$/;"	m	struct:Root	typeref:typename:Window
-windowtest	main.c	/^global bool windowtest = false;$/;"	v	typeref:typename:global bool
+windowtest	main.c	/^global bool      windowtest = false;$/;"	v	typeref:typename:global bool
 x	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
 xerror	main.c	/^xerror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
 xiniterror	main.c	/^xiniterror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int

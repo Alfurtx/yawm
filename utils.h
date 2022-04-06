@@ -15,6 +15,7 @@
 #define global   static
 
 typedef unsigned int uint;
+
 typedef Window client_t;
 
 typedef struct Root {
@@ -26,15 +27,18 @@ typedef struct Root {
 
 typedef union Arguments {
         const void* v;
-        char* str;
 } arg_t;
 
 typedef struct Key {
-        uint modifiers;
+        uint   modifiers;
         KeySym keysym;
         void (*func)(arg_t args);
         arg_t arguments;
 } keybind_t;
 
+typedef struct Monitor {
+        root_t*   root;
+        client_t* clients;
+} monitor_t;
 
 #endif

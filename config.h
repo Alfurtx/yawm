@@ -4,19 +4,18 @@
 #include "utils.h"
 
 #ifdef __APPLE__
-
 const char* term[] = {"open", "-a", "iterm", NULL};
-
+#else
+const char* term[] = {"alacritty", NULL};
 #endif
 
-// TODO(fonsi) find SUPER or whatever it's called key and define it
 #define SHIFT ShiftMask
-#define ALT Mod1Mask
-#define CTRL ControlMask
-
+#define ALT   Mod1Mask
+#define CTRL  ControlMask
+#define SUPER Mod2Mask
 
 static keybind_t keys[] = {
-        {ShiftMask, XK_Return, spawn, {.v = term}}
+    {SUPER, XK_Return, spawn, {.v = term}}
 };
 
 #endif
