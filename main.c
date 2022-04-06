@@ -13,6 +13,7 @@ internal void clean(void);
 internal void loop(void);
 internal void die(char* msg, int errorcode);
 internal void checkotherwm(void);
+internal void spawn(arg_t args);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
@@ -28,13 +29,38 @@ internal void (*handler[LASTEvent])(XEvent*) = {
     [MapRequest]       = maprequest,
     [UnmapNotify]      = unmapnotify,
     // [ResizeRequest]    = resizerequest,
-    // [KeyPress]         = keypress,
+    [KeyPress]         = keypress,
 };
+
+#include "config.h"
+
+#define MODMASK(mask) (mask & (ShiftMask|LockMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
+#define ARRLEN(arr) (sizeof(arr) / sizeof(arr[0]))
 
 int
 main(void)
 {
-        start();
+        display = XOpenDisplay(0);
+        screen  = XDefaultScreen(display);
+
+        root.window = XDefaultRootWindow(display);
+        root.x      = 0;
+        root.y      = 0;
+        root.width  = XDisplayWidth(display, screen);
+        root.height = XDisplayHeight(display, screen);
+
+        // TODO(fonsi): check keybindings are functioning properly, create test window, configure it to receive input and check
+
+        loop();
+
+        clean();
+
+        return (EXIT_SUCCESS);
+}
+
+int
+main2(void)
+{
         return (EXIT_SUCCESS);
 }
 
@@ -110,6 +136,40 @@ checkotherwm(void)
         XSetErrorHandler(xiniterror);
         XSelectInput(display, root.window, SubstructureRedirectMask | SubstructureNotifyMask);
         XSync(display, False);
-        // XSetErrorHandler(xerror);
+        XSetErrorHandler(xerror);
         XSync(display, False);
+}
+
+internal int
+xerror(Display* display, XErrorEvent* error)
+{
+        die("", error->error_code);
+        return(EXIT_SUCCESS);
+}
+
+internal void
+keypress(XEvent* event)
+{
+        XKeyPressedEvent* ev = (XKeyPressedEvent *) event;
+        KeySym keysym = XLookupKeysym(ev, 0);
+        for(uint i = 0; i < ARRLEN(keys); i++)
+        {
+                if(keys[i].keysym == keysym &&
+                   MODMASK(keys[i].modifiers) == MODMASK(ev->state))
+                {
+                        keys[i].func(keys[i].arguments);
+                }
+        }
+}
+
+internal void
+spawn(arg_t args)
+{
+        if(fork() == 0)
+        {
+                setsid();
+                execvp(((const char **)args.v)[0],(char **) args.v);
+                perror("execvp");
+                exit(EXIT_FAILURE);
+        }
 }

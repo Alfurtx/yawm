@@ -4,18 +4,23 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
+!_TAG_PROC_CWD	/Users/alfonso/Desktop/Proyectos Personales/yawm/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
+!_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
 %.o	makefile	/^%.o: %.c$/;"	t
+ARRLEN	main.c	/^#define ARRLEN(/;"	d	file:
+Arguments	utils.h	/^typedef union Arguments {$/;"	u
 BIN	makefile	/^BIN = .$/;"	m
 CC	makefile	/^CC = clang$/;"	m
 CFLAGS	makefile	/^CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic -Wstrict-aliasing$/;"	m
+CONFIG_H	config.h	/^#define CONFIG_H$/;"	d
 Goals	README.md	/^### Goals$/;"	S	chapter:YAWM
 INCLUDE_STB_DS_H	stb_ds.h	/^#define INCLUDE_STB_DS_H$/;"	d
+Key	utils.h	/^typedef struct Key {$/;"	s
 LDFLAGS	makefile	/^LDFLAGS = -lm -lX11$/;"	m
+MODMASK	main.c	/^#define MODMASK(/;"	d	file:
 OBJ	makefile	/^OBJ = $(SRC:.c=.o)$/;"	m
 OS	makefile	/^OS = $(shell uname -s)$/;"	m
 Root	utils.h	/^typedef struct Root {$/;"	s
@@ -71,6 +76,8 @@ __anon6a32dd7a0408	stb_ds.h	/^{$/;"	s
 __anon6a32dd7a0508	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	s
 __anon6a32dd7a0608	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	s
 all	makefile	/^all: update_ctags yawm$/;"	t
+arg_t	utils.h	/^} arg_t;$/;"	t	typeref:union:Arguments
+arguments	utils.h	/^        arg_t arguments;$/;"	m	struct:Key	typeref:typename:arg_t
 arraddn	stb_ds.h	/^#define arraddn /;"	d
 arraddnindex	stb_ds.h	/^#define arraddnindex /;"	d
 arraddnptr	stb_ds.h	/^#define arraddnptr /;"	d
@@ -104,6 +111,7 @@ d	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon
 d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
 die	main.c	/^die(char* msg, int errorcode)$/;"	f	typeref:typename:internal void
 display	main.c	/^global Display* display;$/;"	v	typeref:typename:global Display *
+func	utils.h	/^        void (*func)(arg_t args);$/;"	m	struct:Key	typeref:typename:void (*)(arg_t args)
 global	utils.h	/^#define global /;"	d
 handler	main.c	/^internal void (*handler[LASTEvent])(XEvent*) = {$/;"	v	typeref:typename:internal void (* [LASTEvent])(XEvent *)
 hash	stb_ds.h	/^   size_t    hash [STBDS_BUCKET_LENGTH];$/;"	m	struct:__anon6a32dd7a0308	typeref:typename:size_t[]
@@ -129,12 +137,18 @@ index	stb_ds.h	/^   ptrdiff_t index[STBDS_BUCKET_LENGTH];$/;"	m	struct:__anon6a3
 internal	utils.h	/^#define internal /;"	d
 key	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
 key	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int[2]
+keybind_t	utils.h	/^} keybind_t;$/;"	t	typeref:struct:Key
+keypress	main.c	/^keypress(XEvent* event)$/;"	f	typeref:typename:internal void
+keys	config.h	/^static keybind_t keys[] = {$/;"	v	typeref:typename:keybind_t[]
+keysym	utils.h	/^        KeySym keysym;$/;"	m	struct:Key	typeref:typename:KeySym
 layout	utils.h	/^        uint   layout;$/;"	m	struct:Root	typeref:typename:uint
 length	stb_ds.h	/^  size_t      length;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:size_t
 loop	main.c	/^loop(void)$/;"	f	typeref:typename:internal void
 main	main.c	/^main(void)$/;"	f	typeref:typename:int
+main2	main.c	/^main2(void)$/;"	f	typeref:typename:int
 maprequest	main.c	/^maprequest(XEvent* event)$/;"	f	typeref:typename:internal void
 mode	stb_ds.h	/^  unsigned char mode;  \/\/ this isn't used by the string arena itself$/;"	m	struct:stbds_string_arena	typeref:typename:unsigned char
+modifiers	utils.h	/^        uint modifiers;$/;"	m	struct:Key	typeref:typename:uint
 next	stb_ds.h	/^  struct stbds_string_block *next;$/;"	m	struct:stbds_string_block	typeref:struct:stbds_string_block *
 quit	main.c	/^global bool     quit;$/;"	v	typeref:typename:global bool
 remaining	stb_ds.h	/^  size_t remaining;$/;"	m	struct:stbds_string_arena	typeref:typename:size_t
@@ -161,6 +175,7 @@ shputi	stb_ds.h	/^#define shputi /;"	d
 shputs	stb_ds.h	/^#define shputs /;"	d
 slot_count	stb_ds.h	/^  size_t slot_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 slot_count_log2	stb_ds.h	/^  size_t slot_count_log2;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
+spawn	main.c	/^spawn(arg_t args)$/;"	f	typeref:typename:internal void
 start	main.c	/^start(void)$/;"	f	typeref:typename:internal void
 stbds_arraddn	stb_ds.h	/^#define stbds_arraddn(/;"	d
 stbds_arraddnindex	stb_ds.h	/^#define stbds_arraddnindex(/;"	d
@@ -281,12 +296,14 @@ stbds_unit_tests	stb_ds.h	/^void stbds_unit_tests(void)$/;"	f	typeref:typename:v
 storage	stb_ds.h	/^  char storage[8];$/;"	m	struct:stbds_string_block	typeref:typename:char[8]
 storage	stb_ds.h	/^  stbds_hash_bucket *storage; \/\/ not a separate allocation, just 64-byte aligned storage after/;"	m	struct:__anon6a32dd7a0408	typeref:typename:stbds_hash_bucket *
 storage	stb_ds.h	/^  stbds_string_block *storage;$/;"	m	struct:stbds_string_arena	typeref:typename:stbds_string_block *
+str	utils.h	/^        char* str;$/;"	m	union:Arguments	typeref:typename:char *
 stralloc	stb_ds.h	/^#define stralloc /;"	d
 string	stb_ds.h	/^  stbds_string_arena string;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:stbds_string_arena
 strkey	stb_ds.h	/^char *strkey(int n)$/;"	f	typeref:typename:char *
 strreset	stb_ds.h	/^#define strreset /;"	d
 temp	stb_ds.h	/^  ptrdiff_t   temp;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:ptrdiff_t
 temp_key	stb_ds.h	/^  char * temp_key; \/\/ this MUST be the first field of the hash table$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:char *
+term	config.h	/^const char* term[] = {"open", "-a", "iterm", NULL};$/;"	v	typeref:typename:const char * []
 tombstone_count	stb_ds.h	/^  size_t tombstone_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 tombstone_count_threshold	stb_ds.h	/^  size_t tombstone_count_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 uint	utils.h	/^typedef unsigned int uint;$/;"	t	typeref:typename:unsigned int
@@ -295,9 +312,11 @@ update_ctags	makefile	/^update_ctags:$/;"	t
 used_count	stb_ds.h	/^  size_t used_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 used_count_shrink_threshold	stb_ds.h	/^  size_t used_count_shrink_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 used_count_threshold	stb_ds.h	/^  size_t used_count_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
+v	utils.h	/^        const void* v;$/;"	m	union:Arguments	typeref:typename:const void *
 width	utils.h	/^        uint   width, height;$/;"	m	struct:Root	typeref:typename:uint
 window	utils.h	/^        Window window;$/;"	m	struct:Root	typeref:typename:Window
 x	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
+xerror	main.c	/^xerror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
 xiniterror	main.c	/^xiniterror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
 y	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
 yawm	makefile	/^yawm: $(OBJ)$/;"	t
