@@ -10,12 +10,14 @@
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
 !_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
 %.o	makefile	/^%.o: %.c$/;"	t
+ALT	config.h	/^#define ALT /;"	d
 ARRLEN	main.c	/^#define ARRLEN(/;"	d	file:
 Arguments	utils.h	/^typedef union Arguments {$/;"	u
 BIN	makefile	/^BIN = .$/;"	m
 CC	makefile	/^CC = clang$/;"	m
 CFLAGS	makefile	/^CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic -Wstrict-aliasing$/;"	m
 CONFIG_H	config.h	/^#define CONFIG_H$/;"	d
+CTRL	config.h	/^#define CTRL /;"	d
 Goals	README.md	/^### Goals$/;"	S	chapter:YAWM
 INCLUDE_STB_DS_H	stb_ds.h	/^#define INCLUDE_STB_DS_H$/;"	d
 Key	utils.h	/^typedef struct Key {$/;"	s
@@ -24,6 +26,7 @@ MODMASK	main.c	/^#define MODMASK(/;"	d	file:
 OBJ	makefile	/^OBJ = $(SRC:.c=.o)$/;"	m
 OS	makefile	/^OS = $(shell uname -s)$/;"	m
 Root	utils.h	/^typedef struct Root {$/;"	s
+SHIFT	config.h	/^#define SHIFT /;"	d
 SRC	makefile	/^SRC = $(wildcard .\/*.c)$/;"	m
 STBDS_ADDRESSOF	stb_ds.h	/^  #define STBDS_ADDRESSOF(/;"	d
 STBDS_ADDRESSOF	stb_ds.h	/^#define STBDS_ADDRESSOF(/;"	d
@@ -145,7 +148,6 @@ layout	utils.h	/^        uint   layout;$/;"	m	struct:Root	typeref:typename:uint
 length	stb_ds.h	/^  size_t      length;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:size_t
 loop	main.c	/^loop(void)$/;"	f	typeref:typename:internal void
 main	main.c	/^main(void)$/;"	f	typeref:typename:int
-main2	main.c	/^main2(void)$/;"	f	typeref:typename:int
 maprequest	main.c	/^maprequest(XEvent* event)$/;"	f	typeref:typename:internal void
 mode	stb_ds.h	/^  unsigned char mode;  \/\/ this isn't used by the string arena itself$/;"	m	struct:stbds_string_arena	typeref:typename:unsigned char
 modifiers	utils.h	/^        uint modifiers;$/;"	m	struct:Key	typeref:typename:uint
@@ -304,6 +306,7 @@ strreset	stb_ds.h	/^#define strreset /;"	d
 temp	stb_ds.h	/^  ptrdiff_t   temp;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:ptrdiff_t
 temp_key	stb_ds.h	/^  char * temp_key; \/\/ this MUST be the first field of the hash table$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:char *
 term	config.h	/^const char* term[] = {"open", "-a", "iterm", NULL};$/;"	v	typeref:typename:const char * []
+testwindow	main.c	/^testwindow(void)$/;"	f	typeref:typename:internal void
 tombstone_count	stb_ds.h	/^  size_t tombstone_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 tombstone_count_threshold	stb_ds.h	/^  size_t tombstone_count_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 uint	utils.h	/^typedef unsigned int uint;$/;"	t	typeref:typename:unsigned int
@@ -315,6 +318,7 @@ used_count_threshold	stb_ds.h	/^  size_t used_count_threshold;$/;"	m	struct:__an
 v	utils.h	/^        const void* v;$/;"	m	union:Arguments	typeref:typename:const void *
 width	utils.h	/^        uint   width, height;$/;"	m	struct:Root	typeref:typename:uint
 window	utils.h	/^        Window window;$/;"	m	struct:Root	typeref:typename:Window
+windowtest	main.c	/^global bool windowtest = false;$/;"	v	typeref:typename:global bool
 x	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
 xerror	main.c	/^xerror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
 xiniterror	main.c	/^xiniterror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int

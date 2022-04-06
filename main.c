@@ -4,6 +4,7 @@ global int      screen;
 global Display* display;
 global bool     quit;
 global root_t   root;
+global bool windowtest = false;
 
 // TODO(fonsi): figure out if i need this
 // global client_t clients;
@@ -14,6 +15,8 @@ internal void loop(void);
 internal void die(char* msg, int errorcode);
 internal void checkotherwm(void);
 internal void spawn(arg_t args);
+
+internal void testwindow(void);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
@@ -40,27 +43,7 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 int
 main(void)
 {
-        display = XOpenDisplay(0);
-        screen  = XDefaultScreen(display);
-
-        root.window = XDefaultRootWindow(display);
-        root.x      = 0;
-        root.y      = 0;
-        root.width  = XDisplayWidth(display, screen);
-        root.height = XDisplayHeight(display, screen);
-
-        // TODO(fonsi): check keybindings are functioning properly, create test window, configure it to receive input and check
-
-        loop();
-
-        clean();
-
-        return (EXIT_SUCCESS);
-}
-
-int
-main2(void)
-{
+        testwindow();
         return (EXIT_SUCCESS);
 }
 
@@ -152,6 +135,10 @@ keypress(XEvent* event)
 {
         XKeyPressedEvent* ev = (XKeyPressedEvent *) event;
         KeySym keysym = XLookupKeysym(ev, 0);
+
+        if(keysym == XK_Escape && windowtest)
+                quit = 1;
+
         for(uint i = 0; i < ARRLEN(keys); i++)
         {
                 if(keys[i].keysym == keysym &&
@@ -172,4 +159,43 @@ spawn(arg_t args)
                 perror("execvp");
                 exit(EXIT_FAILURE);
         }
+}
+
+// TODO(fonsi): something goes wrong in macos with xlib, try this in linux
+internal void
+testwindow(void)
+{
+        windowtest = true;
+        display = XOpenDisplay(NULL);
+        screen  = XDefaultScreen(display);
+
+        root.window = XDefaultRootWindow(display);
+        root.x      = 0;
+        root.y      = 0;
+        root.width  = XDisplayWidth(display, screen);
+        root.height = XDisplayHeight(display, screen);
+
+        XWindowAttributes attrs;
+        XGetWindowAttributes(display, root.window, &attrs);
+
+        const Window frame = XCreateSimpleWindow(
+                display,
+                root.window,
+                attrs.x,
+                attrs.y,
+                attrs.width,
+                attrs.height,
+                2,
+                0xff0000,
+                0x0000ff);
+
+        XMapWindow(display, frame);
+
+        loop();
+
+        XSync(display, frame);
+
+        XUnmapWindow(display, frame);
+        XDestroyWindow(display, frame);
+        clean();
 }
