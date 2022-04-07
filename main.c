@@ -213,21 +213,23 @@ testwindow(void)
 internal void
 rearrange(void)
 {
-        uint              size = arrlenu(monitor.clients);
-        XWindowChanges    changes;
-        XWindowAttributes wa;
-
-        XGetWindowAttributes(display, monitor.root->window, &wa);
-
-        if (size > 0) {
-                for (uint i = 0; i < size; i++) {
-                        if (i == 0) {
-                        }
-                }
-        }
+        // TODO(fonsi): implement tiling algorithm
 }
 
 internal void
 configurerequest(XEvent* event)
 {
+        XConfigureRequestEvent* ev = &event->xconfigurerequest;
+
+        XWindowChanges wc = {
+            .x            = ev->x,
+            .y            = ev->y,
+            .width        = ev->width,
+            .height       = ev->height,
+            .border_width = ev->border_width,
+            .sibling      = ev->above,
+            .stack_mode   = ev->detail,
+        };
+
+        XConfigureWindow(display, ev->window, ev->value_mask, &wc);
 }
