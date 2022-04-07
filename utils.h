@@ -36,8 +36,8 @@ typedef struct Key {
 
 typedef struct Client client_t;
 struct Client {
-        Window window;
-        int x, y, w, h;
+        Window    window;
+        int       x, y, w, h;
         client_t* next;
 };
 
@@ -45,6 +45,5 @@ typedef struct Monitor {
         root_t*   root;
         client_t* clients;
 } monitor_t;
-
 
 #endif

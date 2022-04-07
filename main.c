@@ -10,14 +10,18 @@ global monitor_t monitor;
 // TODO(fonsi): figure out if i need this
 // global client_t clients;
 
-internal void start(void);
-internal void clean(void);
-internal void loop(void);
-internal void die(char* msg, int errorcode);
-internal void checkotherwm(void);
-internal void spawn(arg_t args);
+// TODO(fonsi): remove clientdel if not called apart from unmapnotify
 
-internal void testwindow(void);
+internal void      start(void);
+internal void      clean(void);
+internal void      loop(void);
+internal void      die(char* msg, int errorcode);
+internal void      checkotherwm(void);
+internal void      spawn(arg_t args);
+internal void      testwindow(void);
+internal client_t* wintoclient(Window window);
+internal void      rearrange(void);
+internal void      clientdel(client_t* client);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
@@ -26,9 +30,9 @@ internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
-    [MapRequest]       = maprequest,
-    [UnmapNotify]      = unmapnotify,
-    [KeyPress]         = keypress,
+    [MapRequest]  = maprequest,
+    [UnmapNotify] = unmapnotify,
+    [KeyPress]    = keypress,
 };
 
 #include "config.h"
@@ -61,7 +65,7 @@ start(void)
 
         checkotherwm();
 
-        monitor.root    = &root;
+        monitor.root = &root;
 
         XSelectInput(display, root.window, WINDOWMASKS);
 }
@@ -87,6 +91,11 @@ maprequest(XEvent* event)
 {
         XMapRequestEvent* ev = (XMapRequestEvent*) event;
         XMapWindow(display, ev->window);
+
+        client_t* c = calloc(1, sizeof(*c));
+        c->window   = ev->window;
+        c->next     = NULL;
+        // TODO(fonsi): tiling implementation
 }
 
 internal void
@@ -94,6 +103,25 @@ unmapnotify(XEvent* event)
 {
         XUnmapEvent* ev = &event->xunmap;
         XUnmapWindow(display, ev->window);
+
+        client_t* tmp = monitor.clients;
+
+        if (tmp->window == ev->window) {
+                monitor.clients = tmp->next;
+                free(tmp);
+                tmp = NULL;
+                return;
+        }
+
+        for (client_t* c = tmp->next; c; c = c->next) {
+                if (c->window == ev->window) {
+                        tmp->next = c->next;
+                        free(c);
+                        c = NULL;
+                        return;
+                }
+                tmp = c;
+        }
 }
 
 internal int
@@ -191,4 +219,77 @@ testwindow(void)
         XUnmapWindow(display, frame);
         XDestroyWindow(display, frame);
         clean();
+}
+
+internal client_t*
+wintoclient(Window window)
+{
+        if (!monitor.clients)
+                return (NULL);
+
+        for (client_t* c = monitor.clients; c != NULL; c = c->next) {
+                if (c->window == window)
+                        return (c);
+        }
+
+        return (NULL);
+}
+
+internal void
+clientdel(client_t* client)
+{
+        client_t* tmp = monitor.clients;
+
+        if (tmp->window == client->window) {
+                monitor.clients = tmp->next;
+                free(tmp);
+                tmp = NULL;
+                return;
+        }
+
+        for (client_t* c = tmp->next; c; c = c->next) {
+                if (c->window == client->window) {
+                        tmp->next = c->next;
+                        free(c);
+                        c = NULL;
+                        return;
+                }
+                tmp = c;
+        }
+}
+
+internal void
+rearrange(void)
+{
+        client_t* c;
+        uint      count = 0;
+
+        XWindowAttributes wa;
+        XGetWindowAttributes(display, monitor.root->window, &wa);
+
+        for (c = monitor.clients; c; c = c->next) {
+                count++;
+        }
+
+        if (count == 0) {
+                return;
+        } else if (count == 1) {
+                XMoveResizeWindow(display, monitor.clients->window, 0, 0, wa.width, wa.height);
+        } else {
+                uint i = 0;
+                for (c = monitor.clients; c; c = c->next) {
+                        if (i == 0) {
+                                XMoveResizeWindow(
+                                    display, c->window, 0, 0, wa.width / 2, wa.height);
+                        } else {
+                                XMoveResizeWindow(display,
+                                                  c->window,
+                                                  wa.width / 2,
+                                                  (wa.height / count) * i,
+                                                  wa.width / 2,
+                                                  wa.height / count);
+                        }
+                        i++;
+                }
+        }
 }

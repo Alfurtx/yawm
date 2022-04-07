@@ -4,11 +4,11 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/Users/alfonso/Desktop/Proyectos Personales/yawm/	//
+!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
 %.o	makefile	/^%.o: %.c$/;"	t
 ALT	config.h	/^#define ALT /;"	d
 ARRLEN	main.c	/^#define ARRLEN(/;"	d	file:
@@ -114,15 +114,15 @@ checkotherwm	main.c	/^checkotherwm(void)$/;"	f	typeref:typename:internal void
 clean	main.c	/^clean(void)$/;"	f	typeref:typename:internal void
 clean	makefile	/^clean:$/;"	t
 client_t	utils.h	/^typedef struct Client client_t;$/;"	t	typeref:struct:Client
+clientdel	main.c	/^clientdel(client_t* client)$/;"	f	typeref:typename:internal void
 clients	utils.h	/^        client_t* clients;$/;"	m	struct:Monitor	typeref:typename:client_t *
-configurerequest	main.c	/^configurerequest(XEvent* event)$/;"	f	typeref:typename:internal void
 d	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
 d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
 die	main.c	/^die(char* msg, int errorcode)$/;"	f	typeref:typename:internal void
 display	main.c	/^global Display*  display;$/;"	v	typeref:typename:global Display *
 func	utils.h	/^        void (*func)(arg_t args);$/;"	m	struct:Key	typeref:typename:void (*)(arg_t args)
 global	utils.h	/^#define global /;"	d
-h	utils.h	/^        int x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
+h	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 handler	main.c	/^internal void (*handler[LASTEvent])(XEvent*) = {$/;"	v	typeref:typename:internal void (* [LASTEvent])(XEvent *)
 hash	stb_ds.h	/^   size_t    hash [STBDS_BUCKET_LENGTH];$/;"	m	struct:__anon6a32dd7a0308	typeref:typename:size_t[]
 hash_table	stb_ds.h	/^  void      * hash_table;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:void *
@@ -328,15 +328,16 @@ used_count	stb_ds.h	/^  size_t used_count;$/;"	m	struct:__anon6a32dd7a0408	typer
 used_count_shrink_threshold	stb_ds.h	/^  size_t used_count_shrink_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 used_count_threshold	stb_ds.h	/^  size_t used_count_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 v	utils.h	/^        const void* v;$/;"	m	union:Arguments	typeref:typename:const void *
-w	utils.h	/^        int x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
+w	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 width	utils.h	/^        uint   width, height;$/;"	m	struct:Root	typeref:typename:uint
-window	utils.h	/^        Window window;$/;"	m	struct:Client	typeref:typename:Window
+window	utils.h	/^        Window    window;$/;"	m	struct:Client	typeref:typename:Window
 window	utils.h	/^        Window window;$/;"	m	struct:Root	typeref:typename:Window
 windowtest	main.c	/^global bool      windowtest = false;$/;"	v	typeref:typename:global bool
+wintoclient	main.c	/^wintoclient(Window window)$/;"	f	typeref:typename:internal client_t *
+x	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 x	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
-x	utils.h	/^        int x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 xerror	main.c	/^xerror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
 xiniterror	main.c	/^xiniterror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
+y	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 y	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
-y	utils.h	/^        int x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 yawm	makefile	/^yawm: $(OBJ)$/;"	t
