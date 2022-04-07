@@ -16,19 +16,16 @@ internal void loop(void);
 internal void die(char* msg, int errorcode);
 internal void checkotherwm(void);
 internal void spawn(arg_t args);
-internal void rearrange(void);
 
 internal void testwindow(void);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
-internal void configurerequest(XEvent* event);
 internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
-    [ConfigureRequest] = configurerequest,
     [MapRequest]       = maprequest,
     [UnmapNotify]      = unmapnotify,
     [KeyPress]         = keypress,
@@ -47,7 +44,6 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 int
 main(void)
 {
-        testwindow();
         return (EXIT_SUCCESS);
 }
 
@@ -66,7 +62,6 @@ start(void)
         checkotherwm();
 
         monitor.root    = &root;
-        monitor.clients = NULL;
 
         XSelectInput(display, root.window, WINDOWMASKS);
 }
@@ -92,7 +87,6 @@ maprequest(XEvent* event)
 {
         XMapRequestEvent* ev = (XMapRequestEvent*) event;
         XMapWindow(display, ev->window);
-        arrput(monitor.clients, ev->window);
 }
 
 internal void
@@ -100,12 +94,6 @@ unmapnotify(XEvent* event)
 {
         XUnmapEvent* ev = &event->xunmap;
         XUnmapWindow(display, ev->window);
-
-        for (uint i = 0; i < arrlenu(monitor.clients); i++) {
-                if (monitor.clients[i] == ev->window) {
-                        arrdel(monitor.clients, i);
-                }
-        }
 }
 
 internal int
@@ -150,10 +138,6 @@ keypress(XEvent* event)
         XKeyPressedEvent* ev     = (XKeyPressedEvent*) event;
         KeySym            keysym = XLookupKeysym(ev, 0);
 
-        // TODO(fonsi): remove when finished with the basic setup
-        if (keysym == XK_Escape && windowtest)
-                quit = 1;
-
         for (uint i = 0; i < ARRLEN(keys); i++) {
                 if (keys[i].keysym == keysym && MODMASK(keys[i].modifiers) == MODMASK(ev->state)) {
                         keys[i].func(keys[i].arguments);
@@ -172,7 +156,6 @@ spawn(arg_t args)
         }
 }
 
-// TODO(fonsi): something goes wrong in macos with xlib, try this in linux
 internal void
 testwindow(void)
 {
@@ -208,28 +191,4 @@ testwindow(void)
         XUnmapWindow(display, frame);
         XDestroyWindow(display, frame);
         clean();
-}
-
-internal void
-rearrange(void)
-{
-        // TODO(fonsi): implement tiling algorithm
-}
-
-internal void
-configurerequest(XEvent* event)
-{
-        XConfigureRequestEvent* ev = &event->xconfigurerequest;
-
-        XWindowChanges wc = {
-            .x            = ev->x,
-            .y            = ev->y,
-            .width        = ev->width,
-            .height       = ev->height,
-            .border_width = ev->border_width,
-            .sibling      = ev->above,
-            .stack_mode   = ev->detail,
-        };
-
-        XConfigureWindow(display, ev->window, ev->value_mask, &wc);
 }

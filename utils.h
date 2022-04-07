@@ -16,8 +16,6 @@
 
 typedef unsigned int uint;
 
-typedef Window client_t;
-
 typedef struct Root {
         Window window;
         int    x, y;
@@ -36,9 +34,17 @@ typedef struct Key {
         arg_t arguments;
 } keybind_t;
 
+typedef struct Client client_t;
+struct Client {
+        Window window;
+        int x, y, w, h;
+        client_t* next;
+};
+
 typedef struct Monitor {
         root_t*   root;
         client_t* clients;
 } monitor_t;
+
 
 #endif
