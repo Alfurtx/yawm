@@ -124,6 +124,7 @@ display	main.c	/^global Display*  display;$/;"	v	typeref:typename:global Display
 editor	config.h	/^const char* editor[] = {"neovide", NULL};$/;"	v	typeref:typename:const char * []
 func	utils.h	/^        void (*func)(arg_t args);$/;"	m	struct:Key	typeref:typename:void (*)(arg_t args)
 global	utils.h	/^#define global /;"	d
+grabkeys	main.c	/^grabkeys(void)$/;"	f	typeref:typename:internal void
 h	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 handler	main.c	/^internal void (*handler[LASTEvent])(XEvent*) = {$/;"	v	typeref:typename:internal void (* [LASTEvent])(XEvent *)
 hash	stb_ds.h	/^   size_t    hash [STBDS_BUCKET_LENGTH];$/;"	m	struct:__anon6a32dd7a0308	typeref:typename:size_t[]

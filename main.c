@@ -22,6 +22,7 @@ internal void      testwindow(void);
 internal client_t* wintoclient(Window window);
 internal void      rearrange(void);
 internal void      clientdel(client_t* client);
+internal void grabkeys(void);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
@@ -73,6 +74,8 @@ start(void)
         monitor.root = &root;
 
         XSelectInput(display, root.window, WINDOWMASKS);
+
+        grabkeys();
 }
 
 internal void
@@ -328,4 +331,24 @@ configurerequest(XEvent* event)
         wc.stack_mode = ev->detail;
         XConfigureWindow(display, ev->window, ev->value_mask, &wc);
         rearrange();
+}
+
+internal void
+grabkeys(void)
+{
+        KeyCode code;
+        XUngrabKey(display, AnyKey, AnyModifier, root.window);
+        for(uint i = 0; i < ARRLEN(keys); i++) {
+                if((code = XKeysymToKeycode(display, keys[i].keysym)))
+                {
+                        XGrabKey(
+                                        display,
+                                        code,
+                                        keys[i].modifiers,
+                                        root.window,
+                                        True,
+                                        GrabModeAsync,
+                                        GrabModeAsync);
+                }
+        }
 }
