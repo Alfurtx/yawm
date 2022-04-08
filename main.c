@@ -21,18 +21,21 @@ internal void      spawn(arg_t args);
 internal void      testwindow(void);
 internal client_t* wintoclient(Window window);
 internal void      rearrange(void);
-internal void      clientdel(client_t* client);
+internal void      delclient(client_t* client);
+internal void      addclient(client_t* client);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
+internal void configurerequest(XEvent* event);
 internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
-    [MapRequest]  = maprequest,
-    [UnmapNotify] = unmapnotify,
-    [KeyPress]    = keypress,
+    [ConfigureRequest] = configurerequest,
+    [MapRequest]       = maprequest,
+    [UnmapNotify]      = unmapnotify,
+    [KeyPress]         = keypress,
 };
 
 #include "config.h"
@@ -48,6 +51,10 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 int
 main(void)
 {
+        start();
+        rearrange();
+        loop();
+        clean();
         return (EXIT_SUCCESS);
 }
 
@@ -84,6 +91,12 @@ internal void
 clean(void)
 {
         XCloseDisplay(display);
+        client_t* tmp;
+        for (client_t* c = monitor.clients; c;) {
+                tmp = c;
+                c   = c->next;
+                free(tmp);
+        }
 }
 
 internal void
@@ -92,10 +105,19 @@ maprequest(XEvent* event)
         XMapRequestEvent* ev = (XMapRequestEvent*) event;
         XMapWindow(display, ev->window);
 
+        XWindowAttributes wa;
+        XGetWindowAttributes(display, ev->window, &wa);
+
         client_t* c = calloc(1, sizeof(*c));
         c->window   = ev->window;
         c->next     = NULL;
-        // TODO(fonsi): tiling implementation
+        c->x        = wa.x;
+        c->y        = wa.y;
+        c->w        = wa.width;
+        c->h        = wa.height;
+
+        addclient(c);
+        rearrange();
 }
 
 internal void
@@ -236,7 +258,7 @@ wintoclient(Window window)
 }
 
 internal void
-clientdel(client_t* client)
+delclient(client_t* client)
 {
         client_t* tmp = monitor.clients;
 
@@ -292,4 +314,33 @@ rearrange(void)
                         i++;
                 }
         }
+}
+
+internal void
+configurerequest(XEvent* event)
+{
+        XConfigureRequestEvent* ev = &event->xconfigurerequest;
+
+        XWindowChanges changes;
+        changes.x            = ev->x;
+        changes.y            = ev->y;
+        changes.width        = ev->width;
+        changes.height       = ev->height;
+        changes.border_width = ev->border_width;
+        changes.sibling      = ev->above;
+        changes.stack_mode   = ev->detail;
+
+        XConfigureWindow(display, ev->window, ev->value_mask, &changes);
+        rearrange();
+}
+
+internal void
+addclient(client_t* client)
+{
+        client_t* c = monitor.clients;
+
+        while (c) {
+                c = c->next;
+        }
+        c = client;
 }

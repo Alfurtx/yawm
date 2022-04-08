@@ -6,7 +6,8 @@
 #ifdef __APPLE__
 const char* term[] = {"open", "-a", "iterm", NULL};
 #else
-const char* term[] = {"alacritty", NULL};
+const char* term[]   = {"alacritty", NULL};
+const char* editor[] = {"alacritty", "-e nvim", NULL};
 #endif
 
 #define SHIFT ShiftMask
@@ -15,7 +16,8 @@ const char* term[] = {"alacritty", NULL};
 #define SUPER Mod2Mask
 
 static keybind_t keys[] = {
-    {SUPER, XK_Return, spawn, {.v = term}}
+    {ALT, XK_Return, spawn,   {.v = term}},
+    {ALT,      XK_N, spawn, {.v = editor}},
 };
 
 #endif

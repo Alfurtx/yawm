@@ -40,5 +40,14 @@ yawm: $(OBJ)
 clean:
 	rm -f $(TARGET) $(OBJ)
 
+test: xephyr
+	export DISPLAY=":1" && $(TARGET)
+
+xephyr:
+	Xephyr -br -ac -noreset -screen 800x600 :1
+
+testfree:
+	killall -q Xephyr
+
 run:
 	@$(TARGET) || true

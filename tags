@@ -19,6 +19,7 @@ CFLAGS	makefile	/^CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic -Wstrict-aliasin
 CONFIG_H	config.h	/^#define CONFIG_H$/;"	d
 CTRL	config.h	/^#define CTRL /;"	d
 Client	utils.h	/^struct Client {$/;"	s
+DISPLAYNUM	makefile	/^DISPLAYNUM = 1$/;"	m
 Goals	README.md	/^### Goals$/;"	S	chapter:YAWM
 INCLUDE_STB_DS_H	stb_ds.h	/^#define INCLUDE_STB_DS_H$/;"	d
 Key	utils.h	/^typedef struct Key {$/;"	s
@@ -82,6 +83,7 @@ __anon6a32dd7a0308	stb_ds.h	/^{$/;"	s
 __anon6a32dd7a0408	stb_ds.h	/^{$/;"	s
 __anon6a32dd7a0508	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	s
 __anon6a32dd7a0608	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	s
+addclient	main.c	/^addclient(client_t* client)$/;"	f	typeref:typename:internal void
 all	makefile	/^all: update_ctags yawm$/;"	t
 arg_t	utils.h	/^} arg_t;$/;"	t	typeref:union:Arguments
 arguments	utils.h	/^        arg_t arguments;$/;"	m	struct:Key	typeref:typename:arg_t
@@ -114,12 +116,14 @@ checkotherwm	main.c	/^checkotherwm(void)$/;"	f	typeref:typename:internal void
 clean	main.c	/^clean(void)$/;"	f	typeref:typename:internal void
 clean	makefile	/^clean:$/;"	t
 client_t	utils.h	/^typedef struct Client client_t;$/;"	t	typeref:struct:Client
-clientdel	main.c	/^clientdel(client_t* client)$/;"	f	typeref:typename:internal void
 clients	utils.h	/^        client_t* clients;$/;"	m	struct:Monitor	typeref:typename:client_t *
+configurerequest	main.c	/^configurerequest(XEvent* event)$/;"	f	typeref:typename:internal void
 d	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
 d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
+delclient	main.c	/^delclient(client_t* client)$/;"	f	typeref:typename:internal void
 die	main.c	/^die(char* msg, int errorcode)$/;"	f	typeref:typename:internal void
 display	main.c	/^global Display*  display;$/;"	v	typeref:typename:global Display *
+editor	config.h	/^const char* editor[] = {"alacritty", "-e nvim", NULL};$/;"	v	typeref:typename:const char * []
 func	utils.h	/^        void (*func)(arg_t args);$/;"	m	struct:Key	typeref:typename:void (*)(arg_t args)
 global	utils.h	/^#define global /;"	d
 h	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
@@ -316,8 +320,10 @@ strkey	stb_ds.h	/^char *strkey(int n)$/;"	f	typeref:typename:char *
 strreset	stb_ds.h	/^#define strreset /;"	d
 temp	stb_ds.h	/^  ptrdiff_t   temp;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:ptrdiff_t
 temp_key	stb_ds.h	/^  char * temp_key; \/\/ this MUST be the first field of the hash table$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:char *
-term	config.h	/^const char* term[] = {"alacritty", NULL};$/;"	v	typeref:typename:const char * []
+term	config.h	/^const char* term[]   = {"alacritty", NULL};$/;"	v	typeref:typename:const char * []
 term	config.h	/^const char* term[] = {"open", "-a", "iterm", NULL};$/;"	v	typeref:typename:const char * []
+test	makefile	/^test: xephyr$/;"	t
+testfree	makefile	/^testfree:$/;"	t
 testwindow	main.c	/^testwindow(void)$/;"	f	typeref:typename:internal void
 tombstone_count	stb_ds.h	/^  size_t tombstone_count;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
 tombstone_count_threshold	stb_ds.h	/^  size_t tombstone_count_threshold;$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:size_t
@@ -336,6 +342,7 @@ windowtest	main.c	/^global bool      windowtest = false;$/;"	v	typeref:typename:
 wintoclient	main.c	/^wintoclient(Window window)$/;"	f	typeref:typename:internal client_t *
 x	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 x	utils.h	/^        int    x, y;$/;"	m	struct:Root	typeref:typename:int
+xephyr	makefile	/^xephyr:$/;"	t
 xerror	main.c	/^xerror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
 xiniterror	main.c	/^xiniterror(Display* display, XErrorEvent* error)$/;"	f	typeref:typename:internal int
 y	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
