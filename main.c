@@ -48,6 +48,9 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 int
 main(void)
 {
+        start();
+        loop();
+        clean();
         return (EXIT_SUCCESS);
 }
 
@@ -84,6 +87,15 @@ internal void
 clean(void)
 {
         XCloseDisplay(display);
+
+        for(client_t* c = monitor.clients; c;) {
+                client_t* tmp = c;
+                c = c->next;
+                if(tmp) {
+                        free(tmp);
+                        tmp = NULL;
+                }
+        }
 }
 
 internal void
@@ -95,7 +107,12 @@ maprequest(XEvent* event)
         client_t* c = calloc(1, sizeof(*c));
         c->window   = ev->window;
         c->next     = NULL;
-        // TODO(fonsi): tiling implementation
+
+        client_t* aux = monitor.clients;
+        while(aux != NULL) aux = aux->next;
+        aux = c;
+
+        rearrange();
 }
 
 internal void
@@ -122,6 +139,8 @@ unmapnotify(XEvent* event)
                 }
                 tmp = c;
         }
+
+        rearrange();
 }
 
 internal int
