@@ -4,11 +4,11 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
+!_TAG_PROC_CWD	/Users/alfonso/Desktop/Proyectos Personales/yawm/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
+!_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
 %.o	makefile	/^%.o: %.c$/;"	t
 ALT	config.h	/^#define ALT /;"	d
 ARRLEN	main.c	/^#define ARRLEN(/;"	d	file:
@@ -123,9 +123,10 @@ d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__
 delclient	main.c	/^delclient(client_t* client)$/;"	f	typeref:typename:internal void
 die	main.c	/^die(char* msg, int errorcode)$/;"	f	typeref:typename:internal void
 display	main.c	/^global Display*  display;$/;"	v	typeref:typename:global Display *
-editor	config.h	/^const char* editor[] = {"alacritty", "-e nvim", NULL};$/;"	v	typeref:typename:const char * []
+editor	config.h	/^const char* editor[] = {"neovide", NULL};$/;"	v	typeref:typename:const char * []
 func	utils.h	/^        void (*func)(arg_t args);$/;"	m	struct:Key	typeref:typename:void (*)(arg_t args)
 global	utils.h	/^#define global /;"	d
+grabkeys	main.c	/^grabkeys(void)$/;"	f	typeref:typename:internal void
 h	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
 handler	main.c	/^internal void (*handler[LASTEvent])(XEvent*) = {$/;"	v	typeref:typename:internal void (* [LASTEvent])(XEvent *)
 hash	stb_ds.h	/^   size_t    hash [STBDS_BUCKET_LENGTH];$/;"	m	struct:__anon6a32dd7a0308	typeref:typename:size_t[]

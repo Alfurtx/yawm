@@ -21,8 +21,8 @@ internal void      spawn(arg_t args);
 internal void      testwindow(void);
 internal client_t* wintoclient(Window window);
 internal void      rearrange(void);
-internal void      delclient(client_t* client);
-internal void      addclient(client_t* client);
+internal void      clientdel(client_t* client);
+internal void grabkeys(void);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
@@ -52,7 +52,6 @@ int
 main(void)
 {
         start();
-        rearrange();
         loop();
         clean();
         return (EXIT_SUCCESS);
@@ -75,6 +74,8 @@ start(void)
         monitor.root = &root;
 
         XSelectInput(display, root.window, WINDOWMASKS);
+
+        grabkeys();
 }
 
 internal void
@@ -91,11 +92,14 @@ internal void
 clean(void)
 {
         XCloseDisplay(display);
-        client_t* tmp;
-        for (client_t* c = monitor.clients; c;) {
-                tmp = c;
-                c   = c->next;
-                free(tmp);
+
+        for(client_t* c = monitor.clients; c;) {
+                client_t* tmp = c;
+                c = c->next;
+                if(tmp) {
+                        free(tmp);
+                        tmp = NULL;
+                }
         }
 }
 
@@ -111,12 +115,11 @@ maprequest(XEvent* event)
         client_t* c = calloc(1, sizeof(*c));
         c->window   = ev->window;
         c->next     = NULL;
-        c->x        = wa.x;
-        c->y        = wa.y;
-        c->w        = wa.width;
-        c->h        = wa.height;
 
-        addclient(c);
+        client_t* aux = monitor.clients;
+        while(aux != NULL) aux = aux->next;
+        aux = c;
+
         rearrange();
 }
 
@@ -144,6 +147,8 @@ unmapnotify(XEvent* event)
                 }
                 tmp = c;
         }
+
+        rearrange();
 }
 
 internal int
@@ -320,27 +325,33 @@ internal void
 configurerequest(XEvent* event)
 {
         XConfigureRequestEvent* ev = &event->xconfigurerequest;
-
-        XWindowChanges changes;
-        changes.x            = ev->x;
-        changes.y            = ev->y;
-        changes.width        = ev->width;
-        changes.height       = ev->height;
-        changes.border_width = ev->border_width;
-        changes.sibling      = ev->above;
-        changes.stack_mode   = ev->detail;
-
-        XConfigureWindow(display, ev->window, ev->value_mask, &changes);
+        XWindowChanges wc;
+        wc.x = ev->x;
+        wc.y = ev->y;
+        wc.width = ev->width;
+        wc.height = ev->height;
+        wc.sibling = ev->above;
+        wc.stack_mode = ev->detail;
+        XConfigureWindow(display, ev->window, ev->value_mask, &wc);
         rearrange();
 }
 
 internal void
-addclient(client_t* client)
+grabkeys(void)
 {
-        client_t* c = monitor.clients;
-
-        while (c) {
-                c = c->next;
+        KeyCode code;
+        XUngrabKey(display, AnyKey, AnyModifier, root.window);
+        for(uint i = 0; i < ARRLEN(keys); i++) {
+                if((code = XKeysymToKeycode(display, keys[i].keysym)))
+                {
+                        XGrabKey(
+                                        display,
+                                        code,
+                                        keys[i].modifiers,
+                                        root.window,
+                                        True,
+                                        GrabModeAsync,
+                                        GrabModeAsync);
+                }
         }
-        c = client;
 }
