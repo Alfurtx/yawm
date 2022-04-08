@@ -26,10 +26,12 @@ internal void      clientdel(client_t* client);
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
+internal void configurerequest(XEvent* event);
 internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
+    [ConfigureRequest]  = configurerequest,
     [MapRequest]  = maprequest,
     [UnmapNotify] = unmapnotify,
     [KeyPress]    = keypress,
@@ -311,4 +313,19 @@ rearrange(void)
                         i++;
                 }
         }
+}
+
+internal void
+configurerequest(XEvent* event)
+{
+        XConfigureRequestEvent* ev = &event->xconfigurerequest;
+        XWindowChanges wc;
+        wc.x = ev->x;
+        wc.y = ev->y;
+        wc.width = ev->width;
+        wc.height = ev->height;
+        wc.sibling = ev->above;
+        wc.stack_mode = ev->detail;
+        XConfigureWindow(display, ev->window, ev->value_mask, &wc);
+        rearrange();
 }

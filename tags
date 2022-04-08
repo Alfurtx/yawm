@@ -4,11 +4,11 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
+!_TAG_PROC_CWD	/Users/alfonso/Desktop/Proyectos Personales/yawm/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
+!_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
 %.o	makefile	/^%.o: %.c$/;"	t
 ALT	config.h	/^#define ALT /;"	d
 ARRLEN	main.c	/^#define ARRLEN(/;"	d	file:
@@ -116,10 +116,12 @@ clean	makefile	/^clean:$/;"	t
 client_t	utils.h	/^typedef struct Client client_t;$/;"	t	typeref:struct:Client
 clientdel	main.c	/^clientdel(client_t* client)$/;"	f	typeref:typename:internal void
 clients	utils.h	/^        client_t* clients;$/;"	m	struct:Monitor	typeref:typename:client_t *
+configurerequest	main.c	/^configurerequest(XEvent* event)$/;"	f	typeref:typename:internal void
 d	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
 d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
 die	main.c	/^die(char* msg, int errorcode)$/;"	f	typeref:typename:internal void
 display	main.c	/^global Display*  display;$/;"	v	typeref:typename:global Display *
+editor	config.h	/^const char* editor[] = {"neovide", NULL};$/;"	v	typeref:typename:const char * []
 func	utils.h	/^        void (*func)(arg_t args);$/;"	m	struct:Key	typeref:typename:void (*)(arg_t args)
 global	utils.h	/^#define global /;"	d
 h	utils.h	/^        int       x, y, w, h;$/;"	m	struct:Client	typeref:typename:int
