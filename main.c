@@ -118,26 +118,6 @@ unmapnotify(XEvent* event)
 {
         XUnmapEvent* ev = &event->xunmap;
         XUnmapWindow(display, ev->window);
-
-        client_t* tmp = monitor.clients;
-
-        if (tmp->window == ev->window) {
-                monitor.clients = tmp->next;
-                free(tmp);
-                tmp = NULL;
-                return;
-        }
-
-        for (client_t* c = tmp->next; c; c = c->next) {
-                if (c->window == ev->window) {
-                        tmp->next = c->next;
-                        free(c);
-                        c = NULL;
-                        return;
-                }
-                tmp = c;
-        }
-
         rearrange();
 }
 
@@ -250,29 +230,6 @@ wintoclient(Window window)
         }
 
         return (NULL);
-}
-
-internal void
-delclient(client_t* client)
-{
-        client_t* tmp = monitor.clients;
-
-        if (tmp->window == client->window) {
-                monitor.clients = tmp->next;
-                free(tmp);
-                tmp = NULL;
-                return;
-        }
-
-        for (client_t* c = tmp->next; c; c = c->next) {
-                if (c->window == client->window) {
-                        tmp->next = c->next;
-                        free(c);
-                        c = NULL;
-                        return;
-                }
-                tmp = c;
-        }
 }
 
 internal void
