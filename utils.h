@@ -5,6 +5,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
+#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>

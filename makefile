@@ -41,10 +41,10 @@ clean:
 	rm -f $(TARGET) $(OBJ)
 
 test: xephyr
-	export DISPLAY=":1" && $(TARGET)
+	DISPLAY=":1" && $(TARGET)
 
 xephyr:
-	Xephyr -br -ac -noreset -screen 800x600 :1
+	Xephyr -br -ac -noreset -screen 800x600 :1 2> /dev/null &
 
 testfree:
 	killall -q Xephyr

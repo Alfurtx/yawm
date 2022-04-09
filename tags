@@ -4,11 +4,11 @@
 !_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
 !_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
 !_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
-!_TAG_PROC_CWD	/Users/alfonso/Desktop/Proyectos Personales/yawm/	//
+!_TAG_PROC_CWD	/home/fonsi/proyectos/yawm/	//
 !_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
 !_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
 !_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	5.9.0	/b5cc9e0d/
+!_TAG_PROGRAM_VERSION	5.9.0	/p5.9.20210905.0/
 %.o	makefile	/^%.o: %.c$/;"	t
 ALT	config.h	/^#define ALT /;"	d
 ARRLEN	main.c	/^#define ARRLEN(/;"	d	file:
@@ -19,7 +19,6 @@ CFLAGS	makefile	/^CFLAGS = -std=c11 -g -Wall -Wextra -Wpedantic -Wstrict-aliasin
 CONFIG_H	config.h	/^#define CONFIG_H$/;"	d
 CTRL	config.h	/^#define CTRL /;"	d
 Client	utils.h	/^struct Client {$/;"	s
-DISPLAYNUM	makefile	/^DISPLAYNUM = 1$/;"	m
 Goals	README.md	/^### Goals$/;"	S	chapter:YAWM
 INCLUDE_STB_DS_H	stb_ds.h	/^#define INCLUDE_STB_DS_H$/;"	d
 Key	utils.h	/^typedef struct Key {$/;"	s
@@ -83,7 +82,6 @@ __anon6a32dd7a0308	stb_ds.h	/^{$/;"	s
 __anon6a32dd7a0408	stb_ds.h	/^{$/;"	s
 __anon6a32dd7a0508	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	s
 __anon6a32dd7a0608	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	s
-addclient	main.c	/^addclient(client_t* client)$/;"	f	typeref:typename:internal void
 all	makefile	/^all: update_ctags yawm$/;"	t
 arg_t	utils.h	/^} arg_t;$/;"	t	typeref:union:Arguments
 arguments	utils.h	/^        arg_t arguments;$/;"	m	struct:Key	typeref:typename:arg_t
@@ -118,9 +116,11 @@ clean	makefile	/^clean:$/;"	t
 client_t	utils.h	/^typedef struct Client client_t;$/;"	t	typeref:struct:Client
 clients	utils.h	/^        client_t* clients;$/;"	m	struct:Monitor	typeref:typename:client_t *
 configurerequest	main.c	/^configurerequest(XEvent* event)$/;"	f	typeref:typename:internal void
+createnotify	main.c	/^createnotify(XEvent* event)$/;"	f	typeref:typename:internal void
 d	stb_ds.h	/^typedef struct { int key,b,c,d; } stbds_struct;$/;"	m	struct:__anon6a32dd7a0508	typeref:typename:int
 d	stb_ds.h	/^typedef struct { int key[2],b,c,d; } stbds_struct2;$/;"	m	struct:__anon6a32dd7a0608	typeref:typename:int
 delclient	main.c	/^delclient(client_t* client)$/;"	f	typeref:typename:internal void
+destroynotify	main.c	/^destroynotify(XEvent* event)$/;"	f	typeref:typename:internal void
 die	main.c	/^die(char* msg, int errorcode)$/;"	f	typeref:typename:internal void
 display	main.c	/^global Display*  display;$/;"	v	typeref:typename:global Display *
 editor	config.h	/^const char* editor[] = {"neovide", NULL};$/;"	v	typeref:typename:const char * []
@@ -170,6 +170,7 @@ next	utils.h	/^        client_t* next;$/;"	m	struct:Client	typeref:typename:clie
 quit	main.c	/^global bool      quit;$/;"	v	typeref:typename:global bool
 rearrange	main.c	/^rearrange(void)$/;"	f	typeref:typename:internal void
 remaining	stb_ds.h	/^  size_t remaining;$/;"	m	struct:stbds_string_arena	typeref:typename:size_t
+resizeclient	main.c	/^resizeclient(client_t* client, int x, int y, int w, int h)$/;"	f	typeref:typename:internal void
 root	main.c	/^global root_t    root;$/;"	v	typeref:typename:global root_t
 root	utils.h	/^        root_t*   root;$/;"	m	struct:Monitor	typeref:typename:root_t *
 root_t	utils.h	/^} root_t;$/;"	t	typeref:struct:Root
@@ -321,7 +322,7 @@ strkey	stb_ds.h	/^char *strkey(int n)$/;"	f	typeref:typename:char *
 strreset	stb_ds.h	/^#define strreset /;"	d
 temp	stb_ds.h	/^  ptrdiff_t   temp;$/;"	m	struct:__anon6a32dd7a0108	typeref:typename:ptrdiff_t
 temp_key	stb_ds.h	/^  char * temp_key; \/\/ this MUST be the first field of the hash table$/;"	m	struct:__anon6a32dd7a0408	typeref:typename:char *
-term	config.h	/^const char* term[]   = {"alacritty", NULL};$/;"	v	typeref:typename:const char * []
+term	config.h	/^const char* term[] = {"alacritty", NULL};$/;"	v	typeref:typename:const char * []
 term	config.h	/^const char* term[] = {"open", "-a", "iterm", NULL};$/;"	v	typeref:typename:const char * []
 test	makefile	/^test: xephyr$/;"	t
 testfree	makefile	/^testfree:$/;"	t
