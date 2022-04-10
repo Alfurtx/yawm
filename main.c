@@ -7,9 +7,6 @@ global root_t    root;
 global bool      windowtest = false;
 global monitor_t monitor;
 
-// TODO(fonsi): figure out if i need this
-// global client_t clients;
-
 internal void      start(void);
 internal void      clean(void);
 internal void      loop(void);
@@ -25,15 +22,11 @@ internal void      resizeclient(client_t* client, int x, int y, int w, int h);
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
-internal void destroynotify(XEvent* event);
-internal void createnotify(XEvent* event);
 internal void configurerequest(XEvent* event);
 internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
-    [DestroyNotify]    = destroynotify,
-    [CreateNotify]     = createnotify,
     [ConfigureRequest] = configurerequest,
     [MapRequest]       = maprequest,
     [UnmapNotify]      = unmapnotify,
@@ -109,6 +102,30 @@ internal void
 maprequest(XEvent* event)
 {
         XMapRequestEvent* ev = (XMapRequestEvent*) event;
+
+        XWindowAttributes wa;
+        XGetWindowAttributes(display, ev->window, &wa);
+
+        client_t* c = calloc(1, sizeof(*c));
+        c->window   = ev->window;
+        c->h        = wa.height;
+        c->w        = wa.width;
+        c->x        = wa.x;
+        c->y        = wa.y;
+        c->next     = NULL;
+
+        client_t* aux = monitor.clients;
+
+        if (!aux) {
+                monitor.clients = c;
+                return;
+        }
+
+        while (aux->next)
+                aux = aux->next;
+
+        aux->next = c;
+
         XMapWindow(display, ev->window);
         rearrange();
 }
@@ -118,6 +135,27 @@ unmapnotify(XEvent* event)
 {
         XUnmapEvent* ev = &event->xunmap;
         XUnmapWindow(display, ev->window);
+
+        client_t* c    = monitor.clients;
+        client_t* prev = NULL;
+
+        assert(c);
+
+        if (c->window == ev->window) {
+                monitor.clients = c->next;
+                free(c);
+                return;
+        }
+
+        while (c && c->window != ev->window) {
+                prev = c;
+                c    = c->next;
+        }
+
+        assert(c);
+        prev->next = c->next;
+        free(c);
+
         rearrange();
 }
 
@@ -246,11 +284,11 @@ rearrange(void)
         if (count == 0) {
                 return;
         } else if (count == 1) {
-                resizeclient(c, 0, 0, wa.width, wa.height);
+                resizeclient(c->next, 0, 0, wa.width, wa.height);
         } else {
-                resizeclient(c, 0, 0, wa.width / 2, wa.height);
+                resizeclient(c->next, 0, 0, wa.width / 2, wa.height);
                 uint i = 0;
-                for (c = monitor.clients->next; c; c = c->next) {
+                for (c = monitor.clients->next->next; c; c = c->next) {
                         resizeclient(c,
                                      wa.width / 2,
                                      (wa.height / count) * i,
@@ -259,6 +297,8 @@ rearrange(void)
                         i++;
                 }
         }
+
+        fprintf(stderr, "REARRANGE ->\nCLIENT COUNT: %d\n-----\n", count);
 
         XSync(display, False);
 }
@@ -305,57 +345,16 @@ resizeclient(client_t* client, int x, int y, int w, int h)
         client->w = wc.width = w;
         client->h = wc.height = h;
         XConfigureWindow(display, client->window, CWX | CWY | CWHeight | CWWidth, &wc);
+
+        XTextProperty t;
+        XGetWMName(display, client->window, &t);
+
         XSync(display, False);
-}
-
-internal void
-createnotify(XEvent* event)
-{
-        XCreateWindowEvent* ev = &event->xcreatewindow;
-
-        client_t* c = calloc(1, sizeof(*c));
-        c->window   = ev->window;
-        c->h        = ev->height;
-        c->w        = ev->width;
-        c->x        = ev->x;
-        c->y        = ev->y;
-        c->next     = NULL;
-
-        client_t* aux = monitor.clients;
-
-        if (!aux) {
-                monitor.clients = c;
-                return;
-        }
-
-        while (aux->next)
-                aux = aux->next;
-
-        aux->next = c;
-}
-
-internal void
-destroynotify(XEvent* event)
-{
-        XDestroyWindowEvent* ev = &event->xdestroywindow;
-
-        client_t* c    = monitor.clients;
-        client_t* prev = NULL;
-
-        assert(c);
-
-        if (c->window == ev->window) {
-                monitor.clients = c->next;
-                free(c);
-                return;
-        }
-
-        while (c && c->window != ev->window) {
-                prev = c;
-                c    = c->next;
-        }
-
-        assert(c);
-        prev->next = c->next;
-        free(c);
+        fprintf(stderr,
+                "RESIZE IN CLIENT %s:\nx: %d, y: %d, w: %d, h: %d\n=====\n",
+                t.value,
+                client->x,
+                client->y,
+                client->w,
+                client->h);
 }
