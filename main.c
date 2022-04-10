@@ -221,15 +221,11 @@ testwindow(void)
 internal client_t*
 wintoclient(Window window)
 {
-        if (!monitor.clients)
-                return (NULL);
+        client_t* c = monitor.clients;
+        while (c && c->window != window)
+                c = c->next;
 
-        for (client_t* c = monitor.clients; c != NULL; c = c->next) {
-                if (c->window == window)
-                        return (c);
-        }
-
-        return (NULL);
+        return (c);
 }
 
 internal void
@@ -245,24 +241,21 @@ rearrange(void)
                 count++;
         }
 
+        c = monitor.clients;
+
         if (count == 0) {
                 return;
         } else if (count == 1) {
-                XMoveResizeWindow(display, monitor.clients->window, 0, 0, wa.width, wa.height);
+                resizeclient(c, 0, 0, wa.width, wa.height);
         } else {
+                resizeclient(c, 0, 0, wa.width / 2, wa.height);
                 uint i = 0;
-                for (c = monitor.clients; c; c = c->next) {
-                        if (i == 0) {
-                                XMoveResizeWindow(
-                                    display, c->window, 0, 0, wa.width / 2, wa.height);
-                        } else {
-                                XMoveResizeWindow(display,
-                                                  c->window,
-                                                  wa.width / 2,
-                                                  (wa.height / count) * i,
-                                                  wa.width / 2,
-                                                  wa.height / count);
-                        }
+                for (c = monitor.clients->next; c; c = c->next) {
+                        resizeclient(c,
+                                     wa.width / 2,
+                                     (wa.height / count) * i,
+                                     wa.width / 2,
+                                     wa.height / count);
                         i++;
                 }
         }
