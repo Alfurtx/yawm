@@ -41,7 +41,6 @@ clean:
 	rm -f $(TARGET) $(OBJ)
 
 test: xephyr
-	DISPLAY=":1" && $(TARGET)
 
 xephyr:
 	Xephyr -br -ac -noreset -screen 800x600 :1 2> /dev/null &

@@ -7,6 +7,9 @@ global root_t    root;
 global bool      windowtest = false;
 global monitor_t monitor;
 
+internal void addclient(client_t* c);
+internal void delclient(client_t* c);
+
 internal void      start(void);
 internal void      clean(void);
 internal void      loop(void);
@@ -66,7 +69,9 @@ start(void)
 
         checkotherwm();
 
-        monitor.root = &root;
+        monitor.root    = &root;
+        monitor.clients = NULL;
+        monitor.count   = 0;
 
         XSelectInput(display, root.window, WINDOWMASKS);
 
@@ -102,32 +107,26 @@ internal void
 maprequest(XEvent* event)
 {
         XMapRequestEvent* ev = (XMapRequestEvent*) event;
-
         XWindowAttributes wa;
-        XGetWindowAttributes(display, ev->window, &wa);
 
-        client_t* c = calloc(1, sizeof(*c));
-        c->window   = ev->window;
-        c->h        = wa.height;
-        c->w        = wa.width;
-        c->x        = wa.x;
-        c->y        = wa.y;
-        c->next     = NULL;
-
-        client_t* aux = monitor.clients;
-
-        if (!aux) {
-                monitor.clients = c;
+        if (!XGetWindowAttributes(display, ev->window, &wa))
                 return;
+        if (wa.override_redirect)
+                return;
+
+        if (!wintoclient(ev->window)) {
+                client_t* c = calloc(1, sizeof(*c));
+                c->window   = ev->window;
+                c->h        = wa.height;
+                c->w        = wa.width;
+                c->x        = wa.x;
+                c->y        = wa.y;
+                c->next     = NULL;
+
+                addclient(c);
+                rearrange();
+                XMapWindow(display, ev->window);
         }
-
-        while (aux->next)
-                aux = aux->next;
-
-        aux->next = c;
-
-        XMapWindow(display, ev->window);
-        rearrange();
 }
 
 internal void
@@ -135,27 +134,7 @@ unmapnotify(XEvent* event)
 {
         XUnmapEvent* ev = &event->xunmap;
         XUnmapWindow(display, ev->window);
-
-        client_t* c    = monitor.clients;
-        client_t* prev = NULL;
-
-        assert(c);
-
-        if (c->window == ev->window) {
-                monitor.clients = c->next;
-                free(c);
-                return;
-        }
-
-        while (c && c->window != ev->window) {
-                prev = c;
-                c    = c->next;
-        }
-
-        assert(c);
-        prev->next = c->next;
-        free(c);
-
+        delclient(wintoclient(ev->window));
         rearrange();
 }
 
@@ -262,7 +241,6 @@ wintoclient(Window window)
         client_t* c = monitor.clients;
         while (c && c->window != window)
                 c = c->next;
-
         return (c);
 }
 
@@ -270,31 +248,26 @@ internal void
 rearrange(void)
 {
         client_t* c;
-        uint      count = 0;
+        uint      count = monitor.count;
 
         XWindowAttributes wa;
         XGetWindowAttributes(display, monitor.root->window, &wa);
 
-        for (c = monitor.clients; c; c = c->next) {
-                count++;
-        }
-
         c = monitor.clients;
 
-        if (count == 0) {
+        if (!count)
                 return;
-        } else if (count == 1) {
-                resizeclient(c->next, 0, 0, wa.width, wa.height);
-        } else {
-                resizeclient(c->next, 0, 0, wa.width / 2, wa.height);
+        else if (count == 1)
+                resizeclient(c, 0, 0, wa.width, wa.height);
+        else if (count > 1) {
                 uint i = 0;
-                for (c = monitor.clients->next->next; c; c = c->next) {
-                        resizeclient(c,
-                                     wa.width / 2,
-                                     (wa.height / count) * i,
-                                     wa.width / 2,
-                                     wa.height / count);
-                        i++;
+                resizeclient(c, 0, 0, wa.width / 2, wa.height);
+                c = c->next;
+                while (c) {
+                        int hsize = wa.height / count;
+                        int wsize = wa.width / 2;
+                        resizeclient(c, wsize, hsize * i, wsize, hsize);
+                        c = c->next;
                 }
         }
 
@@ -357,4 +330,42 @@ resizeclient(client_t* client, int x, int y, int w, int h)
                 client->y,
                 client->w,
                 client->h);
+}
+
+internal void
+addclient(client_t* c)
+{
+        client_t* aux = monitor.clients;
+
+        if (!aux) {
+                monitor.clients = c;
+                return;
+        }
+
+        while (aux && aux->next != NULL)
+                aux = aux->next;
+
+        aux->next = c;
+        monitor.count++;
+}
+
+internal void
+delclient(client_t* c)
+{
+        client_t* aux = monitor.clients;
+        if (!aux)
+                return;
+
+        while (aux && aux->next->window != c->window)
+                aux = aux->next;
+
+        if (!aux)
+                return;
+        else {
+                client_t* tmp = aux->next;
+                aux->next     = aux->next->next;
+                free(tmp);
+        }
+
+        monitor.count--;
 }
