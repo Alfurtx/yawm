@@ -23,10 +23,13 @@ internal void      manageclient(Window window);
 internal void      unmanageclient(Window window);
 internal void      setquit(arg_t args);
 internal void      focus(Window window);
+internal void      changefocus(arg_t args);
+internal void      grabbuttons(Window window);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
+internal void buttonpress(XEvent* event);
 internal void configurerequest(XEvent* event);
 internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
@@ -36,15 +39,17 @@ internal void (*handler[LASTEvent])(XEvent*) = {
     [MapRequest]       = maprequest,
     [UnmapNotify]      = unmapnotify,
     [KeyPress]         = keypress,
+    [ButtonPress]      = buttonpress,
 };
 
 #include "config.h"
 
 #define ARRLEN(arr) (sizeof(arr) / sizeof(arr[0]))
+#define BUTTONMASK  (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask)
 #define CONFMASK    (CWX | CWY | CWWidth | CWHeight | CWBorderWidth)
 #define WINDOWMASKS                                                                                \
         (SubstructureRedirectMask | SubstructureNotifyMask | KeyPressMask | KeyReleaseMask |       \
-         FocusChangeMask)
+         ButtonPressMask | ButtonReleaseMask)
 #define MODMASK(mask)                                                                              \
         (mask & (ShiftMask | LockMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |  \
                  Mod5Mask))
@@ -72,8 +77,9 @@ start(void)
 
         checkotherwm();
 
-        monitor.root    = &root;
-        monitor.clients = NULL;
+        monitor.root      = &root;
+        monitor.clients   = NULL;
+        monitor.focus_pos = -1;
 
         XSelectInput(display, root.window, WINDOWMASKS);
         grabkeys();
@@ -357,6 +363,7 @@ manageclient(Window window)
         arrput(monitor.clients, c);
         rearrange();
         XMapWindow(display, c.window);
+        grabbuttons(window);
         focus(window);
 }
 
@@ -384,6 +391,46 @@ focus(Window window)
         for (uint i = 0; i < arrlenu(monitor.clients); i++) {
                 if (monitor.clients[i].window != window) {
                         XSetWindowBorder(display, monitor.clients[i].window, border_color_inactive);
+                } else {
+                        monitor.focus_pos = i;
                 }
         }
+}
+
+internal void
+changefocus(arg_t args)
+{
+        if (arrlenu(monitor.clients) == 0)
+                return;
+
+        int aux = monitor.focus_pos + args.i;
+        if (aux < 0)
+                aux = arrlenu(monitor.clients) - 1;
+        if (aux > (int) arrlenu(monitor.clients) - 1)
+                aux = 0;
+
+        focus(monitor.clients[aux].window);
+}
+
+internal void
+buttonpress(XEvent* event)
+{
+        XButtonPressedEvent* ev = &event->xbutton;
+        focus(ev->window);
+}
+
+internal void
+grabbuttons(Window window)
+{
+        XUngrabButton(display, AnyButton, AnyModifier, window);
+        XGrabButton(display,
+                    AnyButton,
+                    AnyModifier,
+                    window,
+                    False,
+                    BUTTONMASK,
+                    GrabModeAsync,
+                    GrabModeSync,
+                    None,
+                    None);
 }

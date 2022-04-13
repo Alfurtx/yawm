@@ -27,7 +27,7 @@ typedef struct Root {
 
 typedef union Arguments {
         const void* v;
-        int i;
+        int         i;
 } arg_t;
 
 typedef struct Key {
@@ -48,6 +48,7 @@ struct Client {
 typedef struct Monitor {
         root_t*   root;
         client_t* clients;
+        int      focus_pos;
 } monitor_t;
 
 #endif

@@ -20,11 +20,12 @@ const char* launcher[] = {"dmenu_run", NULL};
 // global keybindings
 // { modifiers, key, function, arguments }
 static keybind_t keys[] = {
-    {ALT, XK_Return,   spawn,     {.v = term}},
-    {ALT,      XK_n,   spawn,   {.v = editor}},
-    {ALT,  XK_space,   spawn, {.v = launcher}},
-    {ALT, XK_Escape, setquit,     {.v = NULL}},
- // {ALT,      XK_j,   focus,       {.i = 1}},
+    {ALT, XK_Return,       spawn,     {.v = term}},
+    {ALT,      XK_n,       spawn,   {.v = editor}},
+    {ALT,  XK_space,       spawn, {.v = launcher}},
+    {ALT, XK_Escape,     setquit,     {.v = NULL}},
+    {ALT,      XK_j, changefocus,       {.i = -1}},
+    {ALT,      XK_k, changefocus,        {.i = 1}},
 };
 
 // border width of each window, in pixels
