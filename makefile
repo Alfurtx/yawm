@@ -43,7 +43,8 @@ clean:
 test: xephyr
 
 xephyr:
-	Xephyr -br -ac -noreset -screen 800x600 :1 2> /dev/null &
+	-killall -q Xephyr
+	Xephyr -br -ac -noreset -screen 1200x800 :1 2> /dev/null &
 
 testfree:
 	killall -q Xephyr

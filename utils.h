@@ -45,7 +45,6 @@ struct Client {
 typedef struct Monitor {
         root_t*   root;
         client_t* clients;
-        uint      count;
 } monitor_t;
 
 #endif
