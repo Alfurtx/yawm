@@ -17,8 +17,11 @@ internal void      testwindow(void);
 internal client_t* wintoclient(Window window);
 internal void      rearrange(void);
 internal void      grabkeys(void);
-internal void      resizeclient(client_t* client, int x, int y, int w, int h);
+internal void      resizeclient(client_t* client, int x, int y, int w, int h, uint bw);
 internal int       getclientpos(Window window);
+internal void      manageclient(Window window);
+internal void      unmanageclient(Window window);
+internal void      setquit(arg_t args);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
@@ -37,6 +40,7 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 #include "config.h"
 
 #define ARRLEN(arr) (sizeof(arr) / sizeof(arr[0]))
+#define CONFMASK    (CWX | CWY | CWWidth | CWHeight | CWBorderWidth)
 #define WINDOWMASKS                                                                                \
         (SubstructureRedirectMask | SubstructureNotifyMask | KeyPressMask | KeyReleaseMask |       \
          PointerMotionMask)
@@ -56,28 +60,22 @@ main(void)
 internal void
 start(void)
 {
-        printf("test");
         display = XOpenDisplay(0);
         screen  = XDefaultScreen(display);
 
-        printf("test");
         root.window = XDefaultRootWindow(display);
         root.x      = 0;
         root.y      = 0;
         root.width  = XDisplayWidth(display, screen);
         root.height = XDisplayHeight(display, screen);
 
-        printf("test");
         checkotherwm();
 
-        printf("test");
         monitor.root    = &root;
         monitor.clients = NULL;
 
-        printf("test");
         XSelectInput(display, root.window, WINDOWMASKS);
         grabkeys();
-        printf("test");
 }
 
 internal void
@@ -107,21 +105,8 @@ maprequest(XEvent* event)
                 return;
         if (wa.override_redirect)
                 return;
-
-        if (!wintoclient(ev->window)) {
-                client_t c = {
-                    .window = ev->window,
-                    .h      = wa.height,
-                    .w      = wa.width,
-                    .x      = wa.x,
-                    .y      = wa.y,
-                    .next   = NULL,
-                };
-
-                arrput(monitor.clients, c);
-                rearrange();
-                XMapWindow(display, c.window);
-        }
+        if (!wintoclient(ev->window))
+                manageclient(ev->window);
 }
 
 internal void
@@ -129,12 +114,7 @@ unmapnotify(XEvent* event)
 {
         XUnmapEvent* ev = &event->xunmap;
         XUnmapWindow(display, ev->window);
-
-        int pos = getclientpos(ev->window);
-        if (pos != -1) {
-                arrdel(monitor.clients, pos);
-                rearrange();
-        }
+        unmanageclient(ev->window);
 }
 
 internal int
@@ -248,26 +228,55 @@ internal void
 rearrange(void)
 {
         XWindowAttributes wa;
-        XGetWindowAttributes(display, monitor.root->window, &wa);
+        uint              count = arrlenu(monitor.clients);
 
-        uint count = arrlenu(monitor.clients);
-        fprintf(stderr, "REARRANGE ->\nCLIENT COUNT: %d\n-----\n", count);
+        XGetWindowAttributes(display, monitor.root->window, &wa);
 
         if (count == 0) {
                 return;
         } else if (count == 1) {
-                resizeclient(&monitor.clients[0], 0, 0, wa.width, wa.height);
+                resizeclient(&monitor.clients[0],
+                             0,
+                             0,
+                             wa.width - 2 * border_width,
+                             wa.height - 2 * border_width,
+                             border_width);
         } else {
-                uint ws = wa.width / 2;
-                uint hs = wa.height / (count - 1);
-                resizeclient(&monitor.clients[0], 0, 0, ws, wa.height);
+
+                client_t* c  = monitor.clients;
+                uint      bw = c->bw;
+                uint      ws = wa.width / 2;
+                uint      hs = wa.height / (count - 1);
+                uint      x  = 0;
+                uint      y  = 0;
+                resizeclient(c, x, y, ws - 2 * bw, wa.height - 2 * bw, bw);
+
+                // NOTE(fonsi): an excess value is computed to take into account the decimal loss in
+                // (height / number of screens) and shared after in between all windows
+                uint excess = hs - 2 * bw;
+                for (uint i = 1; i < count - 1; i++) {
+                        excess += (hs - bw) + bw;
+                }
+                excess += 2 * bw;
+                excess = wa.height - excess;
+
                 for (uint i = 0; i < count - 1; i++) {
-                        resizeclient(&monitor.clients[i + 1], ws, hs * i, ws, hs);
+                        c  = &monitor.clients[i + 1];
+                        bw = c->bw;
+                        x  = ws - bw;
+                        y  = hs * i;
+
+                        // NOTE(fonsi): first vertical window should have all borders, then next
+                        // ones can move to overlap them
+                        if (i == 0) {
+                                resizeclient(c, x, y, ws - 1 * bw, hs - 2 * bw, bw);
+                        } else if (i == count - 2) {
+                                resizeclient(c, x, y - bw, ws - 1 * bw, hs - bw + excess, bw);
+                        } else {
+                                resizeclient(c, x, y - bw, ws - 1 * bw, hs - 1 * bw, bw);
+                        }
                 }
         }
-
-        // for (uint i = 0; i < count; i++) {
-        // }
 
         XSync(display, False);
 }
@@ -305,28 +314,19 @@ grabkeys(void)
 }
 
 internal void
-resizeclient(client_t* client, int x, int y, int w, int h)
+resizeclient(client_t* client, int x, int y, int w, int h, uint bw)
 {
         XWindowChanges wc;
-        XTextProperty  t;
 
         client->x = wc.x = x;
         client->y = wc.y = y;
         client->w = wc.width = w;
         client->h = wc.height = h;
+        client->bw = wc.border_width = bw;
 
-        XConfigureWindow(display, client->window, CWX | CWY | CWHeight | CWWidth, &wc);
-        XGetWMName(display, client->window, &t);
+        XConfigureWindow(display, client->window, CONFMASK, &wc);
         XMapWindow(display, client->window);
         XSync(display, False);
-
-        fprintf(stderr,
-                "RESIZE IN CLIENT %s:\nx: %d, y: %d, w: %d, h: %d\n=====\n",
-                t.value,
-                client->x,
-                client->y,
-                client->w,
-                client->h);
 }
 
 internal int
@@ -337,4 +337,41 @@ getclientpos(Window window)
                         return (i);
         }
         return (-1);
+}
+
+internal void
+manageclient(Window window)
+{
+        XWindowAttributes wa;
+        XGetWindowAttributes(display, window, &wa);
+
+        client_t c = {.window = window,
+                      .x      = wa.x,
+                      .y      = wa.y,
+                      .w      = wa.width,
+                      .h      = wa.height,
+                      .bw     = border_width};
+
+        // TODO(fonsi): change border color on focus/unfocus window
+        XSetWindowBorder(display, window, border_color);
+
+        arrput(monitor.clients, c);
+        rearrange();
+        XMapWindow(display, c.window);
+}
+
+internal void
+unmanageclient(Window window)
+{
+        int pos = getclientpos(window);
+        if (pos != -1) {
+                arrdel(monitor.clients, pos);
+                rearrange();
+        }
+}
+
+internal void
+setquit(arg_t args)
+{
+        quit = true;
 }

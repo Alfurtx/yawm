@@ -15,7 +15,8 @@
 #define internal static
 #define global   static
 
-typedef unsigned int uint;
+typedef unsigned int  uint;
+typedef unsigned long ulong;
 
 typedef struct Root {
         Window window;
@@ -26,6 +27,7 @@ typedef struct Root {
 
 typedef union Arguments {
         const void* v;
+        int i;
 } arg_t;
 
 typedef struct Key {
@@ -40,6 +42,7 @@ struct Client {
         Window    window;
         int       x, y, w, h;
         client_t* next;
+        uint      bw;
 };
 
 typedef struct Monitor {
