@@ -22,6 +22,7 @@ internal int       getclientpos(Window window);
 internal void      manageclient(Window window);
 internal void      unmanageclient(Window window);
 internal void      setquit(arg_t args);
+internal void      focus(Window window);
 
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
@@ -43,7 +44,7 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 #define CONFMASK    (CWX | CWY | CWWidth | CWHeight | CWBorderWidth)
 #define WINDOWMASKS                                                                                \
         (SubstructureRedirectMask | SubstructureNotifyMask | KeyPressMask | KeyReleaseMask |       \
-         PointerMotionMask)
+         FocusChangeMask)
 #define MODMASK(mask)                                                                              \
         (mask & (ShiftMask | LockMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |  \
                  Mod5Mask))
@@ -352,12 +353,11 @@ manageclient(Window window)
                       .h      = wa.height,
                       .bw     = border_width};
 
-        // TODO(fonsi): change border color on focus/unfocus window
-        XSetWindowBorder(display, window, border_color);
-
+        XSetWindowBorder(display, window, border_color_inactive);
         arrput(monitor.clients, c);
         rearrange();
         XMapWindow(display, c.window);
+        focus(window);
 }
 
 internal void
@@ -374,4 +374,16 @@ internal void
 setquit(arg_t args)
 {
         quit = true;
+}
+
+internal void
+focus(Window window)
+{
+        XSetInputFocus(display, window, RevertToNone, CurrentTime);
+        XSetWindowBorder(display, window, border_color_active);
+        for (uint i = 0; i < arrlenu(monitor.clients); i++) {
+                if (monitor.clients[i].window != window) {
+                        XSetWindowBorder(display, monitor.clients[i].window, border_color_inactive);
+                }
+        }
 }
