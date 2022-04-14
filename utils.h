@@ -1,8 +1,11 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "stb_ds.h"
+// clang-format off
 #include <X11/Xlib.h>
+// clang-format on
+#include "stb_ds.h"
+#include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 #include <assert.h>
@@ -14,6 +17,11 @@
 
 #define internal static
 #define global   static
+
+/* iccm atoms */
+enum { WM_PROTOCOLS, WM_STATE, WM_TAKE_FOCUS, WM_DELETE, WM_LAST };
+/* ewmh atoms */
+enum { NET_WM_FULLSCREEN, NET_WM_LAST };
 
 typedef unsigned int  uint;
 typedef unsigned long ulong;
@@ -48,7 +56,7 @@ struct Client {
 typedef struct Monitor {
         root_t*   root;
         client_t* clients;
-        int      focus_pos;
+        int       focus_pos;
 } monitor_t;
 
 #endif

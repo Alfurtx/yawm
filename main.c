@@ -4,7 +4,6 @@ global int       screen;
 global Display*  display;
 global bool      quit;
 global root_t    root;
-global bool      windowtest = false;
 global monitor_t monitor;
 
 internal void      start(void);
@@ -13,7 +12,6 @@ internal void      loop(void);
 internal void      die(char* msg, int errorcode);
 internal void      checkotherwm(void);
 internal void      spawn(arg_t args);
-internal void      testwindow(void);
 internal client_t* wintoclient(Window window);
 internal void      rearrange(void);
 internal void      grabkeys(void);
@@ -25,7 +23,11 @@ internal void      setquit(arg_t args);
 internal void      focus(Window window);
 internal void      changefocus(arg_t args);
 internal void      grabbuttons(Window window);
+internal void      deleteclient(arg_t args);
+internal void      cycleclient(arg_t args);
+internal void      swapclients(uint srcpos, uint destpos);
 
+internal int xerrordummy(Display* display, XErrorEvent* error);
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
@@ -182,43 +184,6 @@ spawn(arg_t args)
                 perror("execvp");
                 exit(EXIT_FAILURE);
         }
-}
-
-internal void
-testwindow(void)
-{
-        windowtest = true;
-        display    = XOpenDisplay(NULL);
-        screen     = XDefaultScreen(display);
-
-        root.window = XDefaultRootWindow(display);
-        root.x      = 0;
-        root.y      = 0;
-        root.width  = XDisplayWidth(display, screen);
-        root.height = XDisplayHeight(display, screen);
-
-        XWindowAttributes attrs;
-        XGetWindowAttributes(display, root.window, &attrs);
-
-        const Window frame = XCreateSimpleWindow(display,
-                                                 root.window,
-                                                 attrs.x,
-                                                 attrs.y,
-                                                 attrs.width,
-                                                 attrs.height,
-                                                 30,
-                                                 0xff0000,
-                                                 0xff0000);
-
-        XSelectInput(display, frame, KeyPressMask);
-        XMapWindow(display, frame);
-        XSync(display, frame);
-
-        loop();
-
-        XUnmapWindow(display, frame);
-        XDestroyWindow(display, frame);
-        clean();
 }
 
 internal client_t*
@@ -433,4 +398,54 @@ grabbuttons(Window window)
                     GrabModeSync,
                     None,
                     None);
+}
+
+internal void
+deleteclient(arg_t args)
+{
+        if (monitor.focus_pos == -1)
+                return;
+        XGrabServer(display);
+        XSetErrorHandler(xerrordummy);
+        XSetCloseDownMode(display, DestroyAll);
+        XKillClient(display, monitor.clients[monitor.focus_pos].window);
+        XSync(display, False);
+        XSetErrorHandler(xerror);
+        XUngrabServer(display);
+        changefocus((arg_t){.i = -1});
+}
+
+internal int
+xerrordummy(Display* display, XErrorEvent* error)
+{
+        return (0);
+}
+
+internal void
+cycleclient(arg_t args)
+{
+        int count = arrlenu(monitor.clients);
+
+        if (count <= 1)
+                return;
+
+        int pos = monitor.focus_pos + args.i;
+        if (pos < 0) {
+                pos = count - 1;
+        }
+        if (pos > count - 1) {
+                pos = 0;
+        }
+
+        swapclients(monitor.focus_pos, pos);
+        changefocus(args);
+        rearrange();
+}
+
+internal void
+swapclients(uint srcpos, uint destpos)
+{
+        client_t tmp             = monitor.clients[destpos];
+        monitor.clients[destpos] = monitor.clients[srcpos];
+        monitor.clients[srcpos]  = tmp;
 }
