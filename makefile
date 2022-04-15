@@ -38,7 +38,7 @@ yawm: $(OBJ)
 	$(CC) -o $@ $(OBJ) $(LDFLAGS)
 
 clean:
-	rm -f $(TARGET) $(OBJ)
+	@rm -f $(TARGET) $(OBJ)
 
 test: xephyr
 
@@ -47,7 +47,7 @@ xephyr:
 	Xephyr -br -ac -noreset -screen 1200x800 :1 2> /dev/null &
 
 testfree:
-	killall -q Xephyr
+	@killall -q Xephyr
 
 run:
 	@$(TARGET) || true

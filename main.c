@@ -26,6 +26,7 @@ internal void      grabbuttons(Window window);
 internal void      deleteclient(arg_t args);
 internal void      cycleclient(arg_t args);
 internal void      swapclients(uint srcpos, uint destpos);
+internal void      setupatoms(void);
 
 internal int xerrordummy(Display* display, XErrorEvent* error);
 internal int xerror(Display* display, XErrorEvent* error);
@@ -45,6 +46,8 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 };
 
 #include "config.h"
+
+global Atom wmatoms[WM_LAST];
 
 #define ARRLEN(arr) (sizeof(arr) / sizeof(arr[0]))
 #define BUTTONMASK  (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask)
@@ -85,6 +88,7 @@ start(void)
 
         XSelectInput(display, root.window, WINDOWMASKS);
         grabkeys();
+        setupatoms();
 }
 
 internal void
@@ -448,4 +452,13 @@ swapclients(uint srcpos, uint destpos)
         client_t tmp             = monitor.clients[destpos];
         monitor.clients[destpos] = monitor.clients[srcpos];
         monitor.clients[srcpos]  = tmp;
+}
+
+internal void
+setupatoms(void)
+{
+        wmatoms[WM_PROTOCOLS]  = XInternAtom(display, "WM_PROTOCOLS", False);
+        wmatoms[WM_STATE]      = XInternAtom(display, "WM_STATE", False);
+        wmatoms[WM_TAKE_FOCUS] = XInternAtom(display, "WM_TAKE_FOCUS", False);
+        wmatoms[WM_DELETE]     = XInternAtom(display, "WM_DELETE_WINDOW", False);
 }
