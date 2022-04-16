@@ -5,6 +5,7 @@ global Display*  display;
 global bool      quit;
 global root_t    root;
 global monitor_t monitor;
+global Window    checkwin;
 
 internal void      start(void);
 internal void      clean(void);
@@ -27,10 +28,14 @@ internal void      deleteclient(arg_t args);
 internal void      cycleclient(arg_t args);
 internal void      swapclients(uint srcpos, uint destpos);
 internal void      setupatoms(void);
+internal void      setupnetcheck(void);
 
 internal int xerrordummy(Display* display, XErrorEvent* error);
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
+
+internal void clientmessage(XEvent* event);
+internal void sendevent(client_t* c, Atom atom);
 
 internal void buttonpress(XEvent* event);
 internal void configurerequest(XEvent* event);
@@ -38,6 +43,7 @@ internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
+    [ClientMessage]    = clientmessage,
     [ConfigureRequest] = configurerequest,
     [MapRequest]       = maprequest,
     [UnmapNotify]      = unmapnotify,
@@ -48,6 +54,7 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 #include "config.h"
 
 global Atom wmatoms[WM_LAST];
+global Atom netatoms[NET_WM_LAST];
 
 #define ARRLEN(arr) (sizeof(arr) / sizeof(arr[0]))
 #define BUTTONMASK  (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask)
@@ -89,6 +96,7 @@ start(void)
         XSelectInput(display, root.window, WINDOWMASKS);
         grabkeys();
         setupatoms();
+        setupnetcheck();
 }
 
 internal void
@@ -104,6 +112,7 @@ loop(void)
 internal void
 clean(void)
 {
+        XDestroyWindow(display, checkwin);
         XCloseDisplay(display);
         arrfree(monitor.clients);
 }
@@ -341,7 +350,11 @@ unmanageclient(Window window)
 {
         int pos = getclientpos(window);
         if (pos != -1) {
+                XGrabServer(display);
+                XSetErrorHandler(xerrordummy);
                 arrdel(monitor.clients, pos);
+                XSetErrorHandler(xerror);
+                XUngrabServer(display);
                 rearrange();
         }
 }
@@ -457,8 +470,91 @@ swapclients(uint srcpos, uint destpos)
 internal void
 setupatoms(void)
 {
-        wmatoms[WM_PROTOCOLS]  = XInternAtom(display, "WM_PROTOCOLS", False);
-        wmatoms[WM_STATE]      = XInternAtom(display, "WM_STATE", False);
-        wmatoms[WM_TAKE_FOCUS] = XInternAtom(display, "WM_TAKE_FOCUS", False);
-        wmatoms[WM_DELETE]     = XInternAtom(display, "WM_DELETE_WINDOW", False);
+        wmatoms[WM_PROTOCOLS]          = XInternAtom(display, "WM_PROTOCOLS", False);
+        wmatoms[WM_STATE]              = XInternAtom(display, "WM_STATE", False);
+        wmatoms[WM_TAKE_FOCUS]         = XInternAtom(display, "WM_TAKE_FOCUS", False);
+        wmatoms[WM_DELETE]             = XInternAtom(display, "WM_DELETE_WINDOW", False);
+        netatoms[NET_WM_FULLSCREEN]    = XInternAtom(display, "_NET_WM_STATE_FULLSCREEN", False);
+        netatoms[NET_WM_NAME]          = XInternAtom(display, "_NET_WM_NAME", False);
+        netatoms[NET_WM_STATE]         = XInternAtom(display, "_NET_WM_STATE", False);
+        netatoms[NET_WM_CHECK]         = XInternAtom(display, "_NET_SUPPORTING_WM_CHECK", False);
+        netatoms[NET_WM_SUPPORTED]     = XInternAtom(display, "_NET_SUPPORTED", False);
+        netatoms[NET_WM_ACTIVE_WINDOW] = XInternAtom(display, "_NET_ACTIVE_WINDOW", False);
+        netatoms[NET_WM_WINDOW_TYPE]   = XInternAtom(display, "_NET_WM_WINDOW_TYPE", False);
+        netatoms[NET_WM_CLIENT_LIST]   = XInternAtom(display, "_NET_CLIENT_LIST", False);
+}
+
+internal void
+clientmessage(XEvent* event)
+{
+        XClientMessageEvent* ev = &event->xclient;
+        if (ev->message_type == wmatoms[WM_TAKE_FOCUS])
+
+                return;
+}
+
+internal void
+sendevent(client_t* c, Atom atom)
+{
+        if (!c)
+                return;
+
+        Atom* protocols;
+        int   n;
+        bool  exist = false;
+        if (XGetWMProtocols(display, c->window, &protocols, &n)) {
+                while (!exist && n--)
+                        exist = protocols[n] == atom;
+                XFree(protocols);
+        }
+
+        if (exist) {
+                XEvent event;
+                event.type                 = ClientMessage;
+                event.xclient.message_type = wmatoms[WM_PROTOCOLS];
+                event.xclient.window       = c->window;
+                event.xclient.message_type = atom;
+                event.xclient.format       = 32;
+                event.xclient.data.l[0]    = atom;
+                event.xclient.data.l[1]    = CurrentTime;
+                XSendEvent(display, c->window, False, NoEventMask, &event);
+        }
+}
+
+internal void
+setupnetcheck(void)
+{
+        checkwin = XCreateSimpleWindow(display, root.window, 0, 0, 1, 1, 0, 0, 0);
+        XChangeProperty(display,
+                        checkwin,
+                        netatoms[NET_WM_CHECK],
+                        XA_WINDOW,
+                        32,
+                        PropModeReplace,
+                        (unsigned char*) &checkwin,
+                        1);
+        XChangeProperty(display,
+                        checkwin,
+                        netatoms[NET_WM_NAME],
+                        XInternAtom(display, "WM_NAME", False),
+                        8,
+                        PropModeReplace,
+                        (unsigned char*) "yawm",
+                        4);
+        XChangeProperty(display,
+                        root.window,
+                        netatoms[NET_WM_CHECK],
+                        XA_WINDOW,
+                        32,
+                        PropModeReplace,
+                        (unsigned char*) &checkwin,
+                        1);
+        XChangeProperty(display,
+                        root.window,
+                        netatoms[NET_WM_SUPPORTED],
+                        XA_ATOM,
+                        32,
+                        PropModeReplace,
+                        (unsigned char*) netatoms,
+                        NET_WM_LAST);
 }

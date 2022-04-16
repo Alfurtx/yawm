@@ -18,10 +18,20 @@
 #define internal static
 #define global   static
 
-/* iccm atoms */
+/* icccm atoms */
 enum { WM_PROTOCOLS, WM_STATE, WM_TAKE_FOCUS, WM_DELETE, WM_LAST };
 /* ewmh atoms */
-enum { NET_WM_FULLSCREEN, NET_WM_LAST };
+enum {
+        NET_WM_FULLSCREEN,
+        NET_WM_NAME,
+        NET_WM_STATE,
+        NET_WM_CHECK,
+        NET_WM_SUPPORTED,
+        NET_WM_ACTIVE_WINDOW,
+        NET_WM_WINDOW_TYPE,
+        NET_WM_CLIENT_LIST,
+        NET_WM_LAST
+};
 
 typedef unsigned int  uint;
 typedef unsigned long ulong;
