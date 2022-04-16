@@ -1,5 +1,6 @@
 #include "utils.h"
 
+/* global varibles */
 global int       screen;
 global Display*  display;
 global bool      quit;
@@ -7,42 +8,50 @@ global root_t    root;
 global monitor_t monitor;
 global Window    checkwin;
 
-internal void      start(void);
-internal void      clean(void);
-internal void      loop(void);
-internal void      die(char* msg, int errorcode);
-internal void      checkotherwm(void);
-internal void      spawn(arg_t args);
+/* helper functions */
+internal void start(void);
+internal void clean(void);
+internal void loop(void);
+internal void die(char* msg, int errorcode);
+internal void checkotherwm(void);
+internal void rearrange(void);
+internal void grabkeys(void);
+internal void focus(Window window);
+internal void grabbuttons(Window window);
+internal void setupatoms(void);
+internal void setupnetcheck(void);
+internal int  sendevent(client_t* c, Atom atom);
+
+/* window & client helpers functions */
 internal client_t* wintoclient(Window window);
-internal void      rearrange(void);
-internal void      grabkeys(void);
+internal int       wintopos(Window window);
 internal void      resizeclient(client_t* client, int x, int y, int w, int h, uint bw);
-internal int       getclientpos(Window window);
 internal void      manageclient(Window window);
 internal void      unmanageclient(Window window);
-internal void      setquit(arg_t args);
-internal void      focus(Window window);
-internal void      changefocus(arg_t args);
-internal void      grabbuttons(Window window);
-internal void      deleteclient(arg_t args);
-internal void      cycleclient(arg_t args);
 internal void      swapclients(uint srcpos, uint destpos);
-internal void      setupatoms(void);
-internal void      setupnetcheck(void);
 
+/* command functions */
+internal void deleteclient(arg_t args);
+internal void cycleclient(arg_t args);
+internal void changefocus(arg_t args);
+internal void spawn(arg_t args);
+internal void setquit(arg_t args);
+
+/* error handler functions */
 internal int xerrordummy(Display* display, XErrorEvent* error);
 internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
+/* event handler functions */
+internal void createnotify(XEvent* event);
 internal void clientmessage(XEvent* event);
-internal void sendevent(client_t* c, Atom atom);
-
 internal void buttonpress(XEvent* event);
 internal void configurerequest(XEvent* event);
 internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
+    [CreateNotify]     = createnotify,
     [ClientMessage]    = clientmessage,
     [ConfigureRequest] = configurerequest,
     [MapRequest]       = maprequest,
@@ -56,6 +65,7 @@ internal void (*handler[LASTEvent])(XEvent*) = {
 global Atom wmatoms[WM_LAST];
 global Atom netatoms[NET_WM_LAST];
 
+/* definitions */
 #define ARRLEN(arr) (sizeof(arr) / sizeof(arr[0]))
 #define BUTTONMASK  (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask)
 #define CONFMASK    (CWX | CWY | CWWidth | CWHeight | CWBorderWidth)
@@ -96,7 +106,7 @@ start(void)
         XSelectInput(display, root.window, WINDOWMASKS);
         grabkeys();
         setupatoms();
-        setupnetcheck();
+        // setupnetcheck();
 }
 
 internal void
@@ -112,7 +122,7 @@ loop(void)
 internal void
 clean(void)
 {
-        XDestroyWindow(display, checkwin);
+        // XDestroyWindow(display, checkwin);
         XCloseDisplay(display);
         arrfree(monitor.clients);
 }
@@ -271,6 +281,7 @@ configurerequest(XEvent* event)
 {
         XConfigureRequestEvent* ev = &event->xconfigurerequest;
         XWindowChanges          wc;
+
         wc.x          = ev->x;
         wc.y          = ev->y;
         wc.width      = ev->width;
@@ -314,16 +325,6 @@ resizeclient(client_t* client, int x, int y, int w, int h, uint bw)
         XSync(display, False);
 }
 
-internal int
-getclientpos(Window window)
-{
-        for (uint i = 0; i < arrlenu(monitor.clients); i++) {
-                if (monitor.clients[i].window == window)
-                        return (i);
-        }
-        return (-1);
-}
-
 internal void
 manageclient(Window window)
 {
@@ -348,7 +349,7 @@ manageclient(Window window)
 internal void
 unmanageclient(Window window)
 {
-        int pos = getclientpos(window);
+        int pos = wintopos(window);
         if (pos != -1) {
                 XGrabServer(display);
                 XSetErrorHandler(xerrordummy);
@@ -422,13 +423,15 @@ deleteclient(arg_t args)
 {
         if (monitor.focus_pos == -1)
                 return;
-        XGrabServer(display);
-        XSetErrorHandler(xerrordummy);
-        XSetCloseDownMode(display, DestroyAll);
-        XKillClient(display, monitor.clients[monitor.focus_pos].window);
-        XSync(display, False);
-        XSetErrorHandler(xerror);
-        XUngrabServer(display);
+        if (!sendevent(&monitor.clients[monitor.focus_pos], wmatoms[WM_DELETE])) {
+                XGrabServer(display);
+                XSetErrorHandler(xerrordummy);
+                XSetCloseDownMode(display, DestroyAll);
+                XKillClient(display, monitor.clients[monitor.focus_pos].window);
+                XSync(display, False);
+                XSetErrorHandler(xerror);
+                XUngrabServer(display);
+        }
         changefocus((arg_t){.i = -1});
 }
 
@@ -487,17 +490,14 @@ setupatoms(void)
 internal void
 clientmessage(XEvent* event)
 {
-        XClientMessageEvent* ev = &event->xclient;
-        if (ev->message_type == wmatoms[WM_TAKE_FOCUS])
-
-                return;
+        return;
 }
 
-internal void
+internal int
 sendevent(client_t* c, Atom atom)
 {
         if (!c)
-                return;
+                return (0);
 
         Atom* protocols;
         int   n;
@@ -519,6 +519,8 @@ sendevent(client_t* c, Atom atom)
                 event.xclient.data.l[1]    = CurrentTime;
                 XSendEvent(display, c->window, False, NoEventMask, &event);
         }
+
+        return (exist);
 }
 
 internal void
@@ -557,4 +559,19 @@ setupnetcheck(void)
                         PropModeReplace,
                         (unsigned char*) netatoms,
                         NET_WM_LAST);
+}
+
+internal int
+wintopos(Window window)
+{
+        for (uint i = 0; i < arrlenu(monitor.clients); i++)
+                if (monitor.clients[i].window == window)
+                        return (i);
+        return (-1);
+}
+
+internal void
+createnotify(XEvent* event)
+{
+        return;
 }
