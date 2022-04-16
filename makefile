@@ -25,7 +25,7 @@ TARGET = $(BIN)/yawm
 
 .PHONY: all clean
 
-all: update_ctags yawm
+all: clean update_ctags yawm
 
 # Remove when release, but until then, I am too lazy to write something like 'make debug'
 update_ctags:
@@ -44,7 +44,7 @@ test: xephyr
 
 xephyr:
 	-killall -q Xephyr
-	Xephyr -br -ac -noreset -screen 1200x800 :1 2> /dev/null &
+	Xephyr -screen 800x600 :1 2> /dev/null &
 
 testfree:
 	@killall -q Xephyr

@@ -9,3 +9,6 @@
 - [ ] add multimonitor support
 - [ ] issue with character like '[', ']', ':' and probably others
 - [ ] issue with click processing
+- [ ] add top statusbar
+- [ ] add gaps(?)
+- [ ] add autostart script for other apps

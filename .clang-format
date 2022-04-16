@@ -11,8 +11,8 @@ AllowShortBlocksOnASingleLine: Never
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AlwaysBreakAfterReturnType: AllDefinitions
-BinPackArguments: false
-BinPackParameters: false
+BinPackArguments: true
+BinPackParameters: true
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Linux
 BreakBeforeTernaryOperators: true

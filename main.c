@@ -51,13 +51,10 @@ internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
-    [CreateNotify]     = createnotify,
-    [ClientMessage]    = clientmessage,
-    [ConfigureRequest] = configurerequest,
-    [MapRequest]       = maprequest,
-    [UnmapNotify]      = unmapnotify,
-    [KeyPress]         = keypress,
-    [ButtonPress]      = buttonpress,
+    [CreateNotify] = createnotify,         [ClientMessage] = clientmessage,
+    [ConfigureRequest] = configurerequest, [MapRequest] = maprequest,
+    [UnmapNotify] = unmapnotify,           [KeyPress] = keypress,
+    [ButtonPress] = buttonpress,
 };
 
 #include "config.h"
@@ -230,12 +227,8 @@ rearrange(void)
         if (count == 0) {
                 return;
         } else if (count == 1) {
-                resizeclient(&monitor.clients[0],
-                             0,
-                             0,
-                             wa.width - 2 * border_width,
-                             wa.height - 2 * border_width,
-                             border_width);
+                resizeclient(&monitor.clients[0], 0, 0, wa.width - 2 * border_width,
+                             wa.height - 2 * border_width, border_width);
         } else {
 
                 client_t* c  = monitor.clients;
@@ -246,8 +239,9 @@ rearrange(void)
                 uint      y  = 0;
                 resizeclient(c, x, y, ws - 2 * bw, wa.height - 2 * bw, bw);
 
-                // NOTE(fonsi): an excess value is computed to take into account the decimal loss in
-                // (height / number of screens) and shared after in between all windows
+                // NOTE(fonsi): an excess value is computed to take into account
+                // the decimal loss in (height / number of screens) and shared
+                // after in between all windows
                 uint excess = hs - 2 * bw;
                 for (uint i = 1; i < count - 1; i++) {
                         excess += (hs - bw) + bw;
@@ -261,8 +255,8 @@ rearrange(void)
                         x  = ws - bw;
                         y  = hs * i;
 
-                        // NOTE(fonsi): first vertical window should have all borders, then next
-                        // ones can move to overlap them
+                        // NOTE(fonsi): first vertical window should have all
+                        // borders, then next ones can move to overlap them
                         if (i == 0) {
                                 resizeclient(c, x, y, ws - 1 * bw, hs - 2 * bw, bw);
                         } else if (i == count - 2) {
@@ -298,12 +292,7 @@ grabkeys(void)
         XUngrabKey(display, AnyKey, AnyModifier, root.window);
         for (uint i = 0; i < ARRLEN(keys); i++) {
                 if ((code = XKeysymToKeycode(display, keys[i].keysym))) {
-                        XGrabKey(display,
-                                 code,
-                                 keys[i].modifiers,
-                                 root.window,
-                                 True,
-                                 GrabModeAsync,
+                        XGrabKey(display, code, keys[i].modifiers, root.window, True, GrabModeAsync,
                                  GrabModeAsync);
                 }
         }
@@ -331,14 +320,20 @@ manageclient(Window window)
         XWindowAttributes wa;
         XGetWindowAttributes(display, window, &wa);
 
-        client_t c = {.window = window,
-                      .x      = wa.x,
-                      .y      = wa.y,
-                      .w      = wa.width,
-                      .h      = wa.height,
-                      .bw     = border_width};
+        client_t c = {
+            .window = window,
+            .x      = wa.x,
+            .y      = wa.y,
+            .w      = wa.width,
+            .h      = wa.height,
+            .bw     = border_width,
+        };
 
         XSetWindowBorder(display, window, border_color_inactive);
+        XSelectInput(display, window,
+                     EnterWindowMask | FocusChangeMask | PropertyChangeMask | StructureNotifyMask);
+        XChangeProperty(display, window, netatoms[NET_WM_CLIENT_LIST], XA_WINDOW, 32,
+                        PropModeAppend, (unsigned char*) &window, 1);
         arrput(monitor.clients, c);
         rearrange();
         XMapWindow(display, c.window);
@@ -406,16 +401,8 @@ internal void
 grabbuttons(Window window)
 {
         XUngrabButton(display, AnyButton, AnyModifier, window);
-        XGrabButton(display,
-                    AnyButton,
-                    AnyModifier,
-                    window,
-                    False,
-                    BUTTONMASK,
-                    GrabModeAsync,
-                    GrabModeSync,
-                    None,
-                    None);
+        XGrabButton(display, AnyButton, AnyModifier, window, False, BUTTONMASK, GrabModeAsync,
+                    GrabModeSync, None, None);
 }
 
 internal void
@@ -527,38 +514,15 @@ internal void
 setupnetcheck(void)
 {
         checkwin = XCreateSimpleWindow(display, root.window, 0, 0, 1, 1, 0, 0, 0);
-        XChangeProperty(display,
-                        checkwin,
-                        netatoms[NET_WM_CHECK],
-                        XA_WINDOW,
-                        32,
-                        PropModeReplace,
-                        (unsigned char*) &checkwin,
-                        1);
-        XChangeProperty(display,
-                        checkwin,
-                        netatoms[NET_WM_NAME],
-                        XInternAtom(display, "WM_NAME", False),
-                        8,
-                        PropModeReplace,
-                        (unsigned char*) "yawm",
-                        4);
-        XChangeProperty(display,
-                        root.window,
-                        netatoms[NET_WM_CHECK],
-                        XA_WINDOW,
-                        32,
-                        PropModeReplace,
-                        (unsigned char*) &checkwin,
-                        1);
-        XChangeProperty(display,
-                        root.window,
-                        netatoms[NET_WM_SUPPORTED],
-                        XA_ATOM,
-                        32,
-                        PropModeReplace,
-                        (unsigned char*) netatoms,
-                        NET_WM_LAST);
+        XChangeProperty(display, checkwin, netatoms[NET_WM_CHECK], XA_WINDOW, 32, PropModeReplace,
+                        (unsigned char*) &checkwin, 1);
+        XChangeProperty(display, checkwin, netatoms[NET_WM_NAME],
+                        XInternAtom(display, "WM_NAME", False), 8, PropModeReplace,
+                        (unsigned char*) "yawm", 4);
+        XChangeProperty(display, root.window, netatoms[NET_WM_CHECK], XA_WINDOW, 32,
+                        PropModeReplace, (unsigned char*) &checkwin, 1);
+        XChangeProperty(display, root.window, netatoms[NET_WM_SUPPORTED], XA_ATOM, 32,
+                        PropModeReplace, (unsigned char*) netatoms, NET_WM_LAST);
 }
 
 internal int
