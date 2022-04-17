@@ -14,6 +14,10 @@ LDFLAGS = -lm -lX11
 # INCS = -I$(X11INC)
 # LIBS = -L$(X11LIB)
 
+# multimonitor setup (uncomment)
+CFLAGS += -DXINERAMA
+LDFLAGS += -lXinerama
+
 CFLAGS += -D_DEFAULT_SOURCE -D_POSIX_C_SOURCE=200809L
 CFLAGS += -Os
 LDFLAGS += $(LIBS)
@@ -44,7 +48,7 @@ test: xephyr
 
 xephyr:
 	-killall -q Xephyr
-	Xephyr -screen 800x600 :1 2> /dev/null &
+	Xephyr -ac -br -noreset -screen 1000x600 :1 2> /dev/null &
 
 testfree:
 	@killall -q Xephyr

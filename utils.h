@@ -15,6 +15,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// TODO(fonsi): remove in release build
+#define XINERAMA
+
+#if defined(XINERAMA)
+#include <X11/extensions/Xinerama.h>
+#endif
+
 #define internal static
 #define global   static
 
@@ -64,9 +71,17 @@ struct Client {
 };
 
 typedef struct Monitor {
-    root_t*   root;
     client_t* clients;
-    int       focus_pos;
+    int       focus_pos; // TODO(fonsi): remove focuspos from monitor and move it to wm_t
+    int       x_orig;
+    int       y_orig;
+    uint      width;
+    uint      height;
 } monitor_t;
+
+typedef struct WindowManager {
+    monitor_t* monitors;
+    Window     active;
+} wm_t;
 
 #endif

@@ -12,3 +12,4 @@
 - [ ] add top statusbar
 - [ ] add gaps(?)
 - [ ] add autostart script for other apps
+- [ ] refactor monitor with manager.monitors

@@ -4,27 +4,33 @@
 global int       screen;
 global Display*  display;
 global bool      quit;
-global root_t    root;
+global Window    root;
 global monitor_t monitor;
 global Window    checkwin;
+global wm_t      manager;
 
 /* helper functions */
-internal void start(void);
-internal void clean(void);
-internal void loop(void);
-internal void die(char* msg, int errorcode);
-internal void checkotherwm(void);
-internal void rearrange(void);
-internal void grabkeys(void);
-internal void focus(Window window);
-internal void grabbuttons(Window window);
-internal void setupatoms(void);
-internal void setupnetcheck(void);
-internal int  sendevent(client_t* c, Atom atom);
+internal void      start(void);
+internal void      clean(void);
+internal void      loop(void);
+internal void      die(char* msg, int errorcode);
+internal void      checkotherwm(void);
+internal void      rearrange(void);
+internal void      grabkeys(void);
+internal void      focus(Window window);
+internal void      grabbuttons(Window window);
+internal void      setupatoms(void);
+internal void      setupnetcheck(void);
+internal int       sendevent(client_t* c, Atom atom);
+internal monitor_t createmon(XineramaScreenInfo info);
+
+/* multimonitor geometry helper functions */
+internal void setupgeometry(void);
+internal int  wintomonpos(Window window);
 
 /* window & client helpers functions */
 internal client_t* wintoclient(Window window);
-internal int       wintopos(Window window);
+internal int       wintoclientpos(Window window);
 internal void      resizeclient(client_t* client, int x, int y, int w, int h, uint bw);
 internal void      manageclient(Window window);
 internal void      unmanageclient(Window window);
@@ -87,23 +93,14 @@ start(void)
 {
     display = XOpenDisplay(0);
     screen  = XDefaultScreen(display);
+    root    = XDefaultRootWindow(display);
 
-    root.window = XDefaultRootWindow(display);
-    root.x      = 0;
-    root.y      = 0;
-    root.width  = XDisplayWidth(display, screen);
-    root.height = XDisplayHeight(display, screen);
-
+    setupgeometry();
     checkotherwm();
-
-    monitor.root      = &root;
-    monitor.clients   = NULL;
-    monitor.focus_pos = -1;
-
-    XSelectInput(display, root.window, WINDOWMASKS);
+    XSelectInput(display, root, WINDOWMASKS);
     grabkeys();
     setupatoms();
-    // setupnetcheck();
+    setupnetcheck();
 }
 
 internal void
@@ -119,9 +116,11 @@ loop(void)
 internal void
 clean(void)
 {
-    // XDestroyWindow(display, checkwin);
     XCloseDisplay(display);
-    arrfree(monitor.clients);
+    for(uint i = 0; i < arrlenu(manager.monitors); i++) {
+        arrfree(manager.monitors[i].clients);
+    }
+    arrfree(manager.monitors);
 }
 
 internal void
@@ -169,7 +168,7 @@ internal void
 checkotherwm(void)
 {
     XSetErrorHandler(xiniterror);
-    XSelectInput(display, root.window, SubstructureRedirectMask | SubstructureNotifyMask);
+    XSelectInput(display, root, SubstructureRedirectMask | SubstructureNotifyMask);
     XSync(display, False);
     XSetErrorHandler(xerror);
     XSync(display, False);
@@ -220,9 +219,9 @@ internal void
 rearrange(void)
 {
     XWindowAttributes wa;
-    uint              count = arrlenu(monitor.clients);
+    XGetWindowAttributes(display, root, &wa);
 
-    XGetWindowAttributes(display, monitor.root->window, &wa);
+    uint count = arrlenu(monitor.clients);
 
     if(count == 0) {
         return;
@@ -289,11 +288,10 @@ internal void
 grabkeys(void)
 {
     KeyCode code;
-    XUngrabKey(display, AnyKey, AnyModifier, root.window);
+    XUngrabKey(display, AnyKey, AnyModifier, root);
     for(uint i = 0; i < ARRLEN(keys); i++) {
         if((code = XKeysymToKeycode(display, keys[i].keysym))) {
-            XGrabKey(display, code, keys[i].modifiers, root.window, True, GrabModeAsync,
-                     GrabModeAsync);
+            XGrabKey(display, code, keys[i].modifiers, root, True, GrabModeAsync, GrabModeAsync);
         }
     }
 }
@@ -344,7 +342,7 @@ manageclient(Window window)
 internal void
 unmanageclient(Window window)
 {
-    int pos = wintopos(window);
+    int pos = wintoclientpos(window);
     if(pos != -1) {
         XGrabServer(display);
         XSetErrorHandler(xerrordummy);
@@ -366,6 +364,7 @@ focus(Window window)
 {
     XSetInputFocus(display, window, RevertToNone, CurrentTime);
     XSetWindowBorder(display, window, border_color_active);
+
     for(uint i = 0; i < arrlenu(monitor.clients); i++) {
         if(monitor.clients[i].window != window) {
             XSetWindowBorder(display, monitor.clients[i].window, border_color_inactive);
@@ -373,6 +372,9 @@ focus(Window window)
             monitor.focus_pos = i;
         }
     }
+
+    XChangeProperty(display, window, netatoms[NET_WM_ACTIVE_WINDOW], XA_WINDOW, PropModeReplace, 32,
+                    (unsigned char*) &window, 1);
 }
 
 internal void
@@ -411,6 +413,7 @@ deleteclient(arg_t args)
     if(monitor.focus_pos == -1)
         return;
     if(!sendevent(&monitor.clients[monitor.focus_pos], wmatoms[WM_DELETE])) {
+        fprintf(stderr, "no atom");
         XGrabServer(display);
         XSetErrorHandler(xerrordummy);
         XSetCloseDownMode(display, DestroyAll);
@@ -513,20 +516,15 @@ sendevent(client_t* c, Atom atom)
 internal void
 setupnetcheck(void)
 {
-    checkwin = XCreateSimpleWindow(display, root.window, 0, 0, 1, 1, 0, 0, 0);
-    XChangeProperty(display, checkwin, netatoms[NET_WM_CHECK], XA_WINDOW, 32, PropModeReplace,
-                    (unsigned char*) &checkwin, 1);
-    XChangeProperty(display, checkwin, netatoms[NET_WM_NAME],
-                    XInternAtom(display, "WM_NAME", False), 8, PropModeReplace,
-                    (unsigned char*) "yawm", 4);
-    XChangeProperty(display, root.window, netatoms[NET_WM_CHECK], XA_WINDOW, 32, PropModeReplace,
-                    (unsigned char*) &checkwin, 1);
-    XChangeProperty(display, root.window, netatoms[NET_WM_SUPPORTED], XA_ATOM, 32, PropModeReplace,
+    // NOTE(fonsi): setup list of supported protocols
+    XChangeProperty(display, root, netatoms[NET_WM_SUPPORTED], XA_ATOM, PropModeReplace, 32,
                     (unsigned char*) netatoms, NET_WM_LAST);
+
+    // TODO(fonsi): set _NET_NUMBER_OF_DESKTOPS for virtual desktops
 }
 
 internal int
-wintopos(Window window)
+wintoclientpos(Window window)
 {
     for(uint i = 0; i < arrlenu(monitor.clients); i++)
         if(monitor.clients[i].window == window)
@@ -538,4 +536,61 @@ internal void
 createnotify(XEvent* event)
 {
     return;
+}
+
+internal monitor_t
+createmon(XineramaScreenInfo info)
+{
+    monitor_t mon = {
+        .clients   = NULL,
+        .focus_pos = -1,
+        .x_orig    = info.x_org,
+        .y_orig    = info.y_org,
+        .height    = info.height,
+        .width     = info.width,
+    };
+    return (mon);
+}
+
+internal void
+setupgeometry(void)
+{
+    manager.monitors = NULL;
+
+#if defined(XINERAMA)
+    int                 num;
+    XineramaScreenInfo* info = XineramaQueryScreens(display, &num);
+    for(uint i = 0; i < num; i++) {
+        arrput(manager.monitors, createmon(info[i]));
+    }
+    XFree(info);
+#else
+    XWindowAttributes wa;
+    XGetWindowAttributes(display, root, &wa);
+
+    monitor.clients   = NULL;
+    monitor.focus_pos = -1;
+    monitor.x_orig    = 0;
+    monitor.y_orig    = 0;
+    monitor.height    = wa.height;
+    monitor.width     = wa.width;
+#endif
+}
+
+internal int
+wintomonpos(Window window)
+{
+    uint moncount = arrlenu(manager.monitors);
+
+    for(uint i = 0; i < moncount; i++) {
+
+        uint clientcount = arrlenu(manager.monitors[i].clients);
+
+        for(uint j = 0; j < clientcount; j++) {
+
+            if(manager.monitors[i].clients->window == window)
+                return (i);
+        }
+    }
+    return (-1);
 }
