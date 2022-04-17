@@ -22,51 +22,51 @@
 enum { WM_PROTOCOLS, WM_STATE, WM_TAKE_FOCUS, WM_DELETE, WM_LAST };
 /* ewmh atoms */
 enum {
-        NET_WM_FULLSCREEN,
-        NET_WM_NAME,
-        NET_WM_STATE,
-        NET_WM_CHECK,
-        NET_WM_SUPPORTED,
-        NET_WM_ACTIVE_WINDOW,
-        NET_WM_WINDOW_TYPE,
-        NET_WM_CLIENT_LIST,
-        NET_WM_LAST
+    NET_WM_FULLSCREEN,
+    NET_WM_NAME,
+    NET_WM_STATE,
+    NET_WM_CHECK,
+    NET_WM_SUPPORTED,
+    NET_WM_ACTIVE_WINDOW,
+    NET_WM_WINDOW_TYPE,
+    NET_WM_CLIENT_LIST,
+    NET_WM_LAST
 };
 
 typedef unsigned int  uint;
 typedef unsigned long ulong;
 
 typedef struct Root {
-        Window window;
-        int    x, y;
-        uint   width, height;
-        uint   layout;
+    Window window;
+    int    x, y;
+    uint   width, height;
+    uint   layout;
 } root_t;
 
 typedef union Arguments {
-        const void* v;
-        int         i;
+    const void* v;
+    int         i;
 } arg_t;
 
 typedef struct Key {
-        uint   modifiers;
-        KeySym keysym;
-        void (*func)(arg_t args);
-        arg_t arguments;
+    uint   modifiers;
+    KeySym keysym;
+    void (*func)(arg_t args);
+    arg_t arguments;
 } keybind_t;
 
 typedef struct Client client_t;
 struct Client {
-        Window    window;
-        int       x, y, w, h;
-        client_t* next;
-        uint      bw;
+    Window    window;
+    int       x, y, w, h;
+    client_t* next;
+    uint      bw;
 };
 
 typedef struct Monitor {
-        root_t*   root;
-        client_t* clients;
-        int       focus_pos;
+    root_t*   root;
+    client_t* clients;
+    int       focus_pos;
 } monitor_t;
 
 #endif
