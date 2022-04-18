@@ -13,3 +13,4 @@
 - [ ] add gaps(?)
 - [ ] add autostart script for other apps
 - [ ] refactor monitor with manager.monitors
+- [ ] change focus of monitor based on last clicked monitor
