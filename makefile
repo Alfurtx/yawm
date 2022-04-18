@@ -48,7 +48,7 @@ test: xephyr
 
 xephyr:
 	-killall -q Xephyr
-	Xephyr -ac -br -noreset -screen 1000x600 :1 2> /dev/null &
+	Xephyr -ac -br -noreset +xinerama -screen 800x600 -screen 800x600 -screen 800x600 :1 2> /dev/null &
 
 testfree:
 	@killall -q Xephyr
