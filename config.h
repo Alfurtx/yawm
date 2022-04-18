@@ -10,7 +10,7 @@ static const ulong border_color_active   = 0xFF0000;
 
 /* application shell cmd */
 const char* term[]     = {"alacritty", NULL};
-const char* editor[]   = {"neovide", NULL};
+const char* editor[]   = {"emacsclient -nc -a 'emacs'", NULL};
 const char* launcher[] = {"dmenu_run", NULL};
 const char* search[]   = {"google-chrome-stable", NULL};
 
