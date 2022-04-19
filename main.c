@@ -594,6 +594,7 @@ setupgeometry(void)
         arrput(manager.monitors, mon);
     }
     XFree(info);
+    focusmonitor(0);
 #else
     XWindowAttributes wa;
     XGetWindowAttributes(display, root, &wa);
@@ -700,10 +701,8 @@ internal void
 changemonitorfocus(arg_t args)
 {
     uint count = arrlenu(manager.monitors);
-
-    if(count <= 1)
+    if(count == 1)
         return;
-
     int pos = manager.active_monitor_pos + args.i;
     if(pos < 0)
         pos = count - 1;
@@ -716,5 +715,8 @@ internal void
 focusmonitor(uint pos)
 {
     manager.active_monitor_pos = pos;
-    focus(manager.monitors[pos].clients[0].window);
+    fprintf(stderr, "ACTIVE MONITOR: %d", pos);
+
+    if(manager.monitors[pos].clients)
+        focus(manager.monitors[pos].clients[0].window);
 }
