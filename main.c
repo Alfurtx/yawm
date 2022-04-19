@@ -16,7 +16,7 @@ internal void checkotherwm(void);
 internal void rearrange(void);
 internal void grabkeys(void);
 internal void focus(Window window);
-internal void grabbuttons(Window window);
+internal void grabbuttons(Window window, bool focused);
 internal void setupatoms(void);
 internal void setupnetcheck(void);
 internal int  sendevent(client_t* c, Atom atom);
@@ -26,9 +26,11 @@ internal void printtest(void);
 /* multimonitor geometry helper functions */
 internal monitor_t  createmon(XineramaScreenInfo info);
 internal void       setupgeometry(void);
-internal int        wintomonpos(Window window);
+internal uint       wintomonpos(Window window);
 internal monitor_t* wintomon(Window window);
 internal monitor_t* getactivemonitor(void);
+internal uint       coordstomonitorpos(uint x, uint y);
+internal void       focusmonitor(uint pos);
 
 /* window & client helpers functions */
 internal client_t*  wintoclient(Window window);
@@ -41,6 +43,7 @@ internal void       swapclients(uint srcpos, uint destpos);
 internal Window     getactivewindow(void);
 
 /* command functions */
+internal void changemonitorfocus(arg_t args);
 internal void deleteclient(arg_t args);
 internal void cycleclient(arg_t args);
 internal void changefocus(arg_t args);
@@ -53,6 +56,7 @@ internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
 /* event handler functions */
+internal void motionnotify(XEvent* event);
 internal void createnotify(XEvent* event);
 internal void clientmessage(XEvent* event);
 internal void buttonpress(XEvent* event);
@@ -64,7 +68,7 @@ internal void (*handler[LASTEvent])(XEvent*) = {
     [CreateNotify] = createnotify,         [ClientMessage] = clientmessage,
     [ConfigureRequest] = configurerequest, [MapRequest] = maprequest,
     [UnmapNotify] = unmapnotify,           [KeyPress] = keypress,
-    [ButtonPress] = buttonpress,
+    [ButtonPress] = buttonpress,           [MotionNotify] = motionnotify,
 };
 
 #include "config.h"
@@ -78,7 +82,7 @@ global Atom netatoms[NET_WM_LAST];
 #define CONFMASK    (CWX | CWY | CWWidth | CWHeight | CWBorderWidth)
 #define WINDOWMASKS                                                                                \
     (SubstructureRedirectMask | SubstructureNotifyMask | KeyPressMask | KeyReleaseMask |           \
-     ButtonPressMask | ButtonReleaseMask)
+     ButtonPressMask | ButtonReleaseMask | PointerMotionMask)
 #define MODMASK(mask)                                                                              \
     (mask &                                                                                        \
      (ShiftMask | LockMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask))
@@ -331,7 +335,6 @@ manageclient(Window window)
     XWindowAttributes wa;
     XGetWindowAttributes(display, window, &wa);
 
-    printtest();
     client_t c = {
         .window = window,
         .x      = wa.x,
@@ -349,7 +352,7 @@ manageclient(Window window)
     arrput(manager.monitors[manager.active_monitor_pos].clients, c);
     rearrange();
     XMapWindow(display, c.window);
-    grabbuttons(window);
+    grabbuttons(window, true);
     focus(window);
 }
 
@@ -379,11 +382,13 @@ focus(Window window)
 {
     XSetInputFocus(display, window, RevertToNone, CurrentTime);
     XSetWindowBorder(display, window, border_color_active);
-    monitor_t* monitor = getactivemonitor();
+    grabbuttons(window, true);
+    monitor_t* monitor = wintomon(window);
 
     for(uint i = 0; i < arrlenu(monitor->clients); i++) {
         if(monitor->clients[i].window != window) {
             XSetWindowBorder(display, monitor->clients[i].window, border_color_inactive);
+            grabbuttons(monitor->clients[i].window, false);
         } else {
             manager.active_window_pos = i;
         }
@@ -397,7 +402,7 @@ internal void
 changefocus(arg_t args)
 {
     monitor_t* monitor = &manager.monitors[manager.active_monitor_pos];
-    uint       count   = arrlenu(monitor->clients);
+    int        count   = arrlenu(monitor->clients);
 
     if(count == 0)
         return;
@@ -419,15 +424,13 @@ buttonpress(XEvent* event)
 }
 
 internal void
-grabbuttons(Window window)
+grabbuttons(Window window, bool focused)
 {
     XUngrabButton(display, AnyButton, AnyModifier, window);
 
-    // TODO(fonsi): this is valid for window unfocused, add another case for focused windows, so
-    // that it doesnt block all buttons from the window
-    // eg. no click issue in google chrome
-    XGrabButton(display, AnyButton, AnyModifier, window, False, BUTTONMASK, GrabModeAsync,
-                GrabModeSync, None, None);
+    if(!focused)
+        XGrabButton(display, AnyButton, AnyModifier, window, False, BUTTONMASK, GrabModeAsync,
+                    GrabModeSync, None, None);
 }
 
 internal void
@@ -554,9 +557,10 @@ internal int
 wintoclientpos(Window window)
 {
     monitor_t* mon = wintomon(window);
-    for(uint i = 0; i < arrlenu(mon->clients); i++)
+    for(uint i = 0; i < arrlenu(mon->clients); i++) {
         if(mon->clients[i].window == window)
             return (i);
+    }
     return (-1);
 }
 
@@ -583,14 +587,12 @@ internal void
 setupgeometry(void)
 {
 #if defined(XINERAMA)
-    int                 num;
-    XineramaScreenInfo* info = XineramaQueryScreens(display, &num);
+    uint                num;
+    XineramaScreenInfo* info = XineramaQueryScreens(display, (int*) &num);
     for(uint i = 0; i < num; i++) {
         monitor_t mon = createmon(info[i]);
         arrput(manager.monitors, mon);
-        fprintf(stderr, "MONITOR %d\n", info[i].screen_number);
     }
-    fprintf(stderr, "NUM OF SCREENS: %d\n", num);
     XFree(info);
 #else
     XWindowAttributes wa;
@@ -604,39 +606,36 @@ setupgeometry(void)
 #endif
 }
 
-internal int
+internal uint
 wintomonpos(Window window)
 {
     uint moncount = arrlenu(manager.monitors);
-
     for(uint i = 0; i < moncount; i++) {
-
         uint clientcount = arrlenu(manager.monitors[i].clients);
-
-        for(uint j = 0; j < clientcount; j++) {
-
-            if(manager.monitors[i].clients->window == window)
-                return (i);
+        if(clientcount > 0) {
+            for(uint j = 0; j < clientcount; j++) {
+                if(manager.monitors[i].clients[j].window == window)
+                    return (i);
+            }
         }
     }
-    return (-1);
+    return (0);
 }
 
 internal monitor_t*
 wintomon(Window window)
 {
     uint moncount = arrlenu(manager.monitors);
-
     for(uint i = 0; i < moncount; i++) {
-
         uint clientcount = arrlenu(manager.monitors[i].clients);
-
-        for(uint j = 0; j < clientcount; j++) {
-            if(manager.monitors[i].clients->window == window)
-                return (&manager.monitors[i]);
+        if(clientcount > 0) {
+            for(uint j = 0; j < clientcount; j++) {
+                if(manager.monitors[i].clients[j].window == window)
+                    return (&manager.monitors[i]);
+            }
         }
     }
-    return (NULL);
+    return (&manager.monitors[0]);
 }
 
 internal void
@@ -659,7 +658,7 @@ clienttomon(client_t* client)
 {
     for(uint i = 0; i < arrlenu(manager.monitors); i++) {
         for(uint j = 0; j < arrlenu(manager.monitors[i].clients); j++) {
-            if(manager.monitors[i].clients->window == client->window)
+            if(manager.monitors[i].clients[j].window == client->window)
                 return (&manager.monitors[i]);
         }
     }
@@ -676,4 +675,46 @@ internal void
 printtest(void)
 {
     fprintf(stderr, "test\n");
+}
+
+internal void
+motionnotify(XEvent* event)
+{
+    XMotionEvent* ev           = &event->xmotion;
+    manager.active_monitor_pos = coordstomonitorpos(ev->x_root, ev->y_root);
+}
+
+internal uint
+coordstomonitorpos(uint x, uint y)
+{
+    for(uint i = 0; i < arrlenu(manager.monitors); i++) {
+        monitor_t* mon = &manager.monitors[i];
+        if(x > mon->x_orig && x < mon->x_orig + mon->width && y > mon->y_orig &&
+           y < mon->y_orig + mon->height)
+            return (i);
+    }
+    return (0);
+}
+
+internal void
+changemonitorfocus(arg_t args)
+{
+    uint count = arrlenu(manager.monitors);
+
+    if(count <= 1)
+        return;
+
+    int pos = manager.active_monitor_pos + args.i;
+    if(pos < 0)
+        pos = count - 1;
+    if(pos > (int) count - 1)
+        pos = 0;
+    focusmonitor(pos);
+}
+
+internal void
+focusmonitor(uint pos)
+{
+    manager.active_monitor_pos = pos;
+    focus(manager.monitors[pos].clients[0].window);
 }

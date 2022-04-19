@@ -23,16 +23,18 @@ const char* search[]   = {"google-chrome-stable", NULL};
 /* global keybindings */
 // { modifiers, key, function, arguments }
 static keybind_t keys[] = {
-    {        ALT, XK_Return,        spawn,     {.v = term}},
-    {        ALT,      XK_n,        spawn,   {.v = editor}},
-    {        ALT,      XK_d,        spawn, {.v = launcher}},
-    {        ALT,      XK_g,        spawn,   {.v = search}},
-    {        ALT, XK_Escape,      setquit,     {.v = NULL}},
-    {        ALT,      XK_j,  changefocus,       {.i = -1}},
-    {        ALT,      XK_k,  changefocus,        {.i = 1}},
-    {        ALT,      XK_w, deleteclient,     {.v = NULL}},
-    {ALT | SHIFT,      XK_j,  cycleclient,       {.i = -1}},
-    {ALT | SHIFT,      XK_k,  cycleclient,        {.i = 1}},
+    {        ALT, XK_Return,              spawn,     {.v = term}},
+    {        ALT,      XK_n,              spawn,   {.v = editor}},
+    {        ALT,      XK_d,              spawn, {.v = launcher}},
+    {        ALT,      XK_g,              spawn,   {.v = search}},
+    {        ALT, XK_Escape,            setquit,     {.v = NULL}},
+    {        ALT,      XK_j,        changefocus,       {.i = -1}},
+    {        ALT,      XK_k,        changefocus,        {.i = 1}},
+    {        ALT,      XK_w,       deleteclient,     {.v = NULL}},
+    {ALT | SHIFT,      XK_j,        cycleclient,       {.i = -1}},
+    {ALT | SHIFT,      XK_k,        cycleclient,        {.i = 1}},
+    {ALT | SHIFT,  XK_comma, changemonitorfocus,       {.i = -1}},
+    {ALT | SHIFT, XK_period, changemonitorfocus,        {.i = 1}},
 };
 
 #endif

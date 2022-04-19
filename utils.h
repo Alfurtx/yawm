@@ -69,8 +69,8 @@ struct Client {
 
 typedef struct Monitor {
     client_t* clients;
-    int       x_orig;
-    int       y_orig;
+    uint       x_orig;
+    uint       y_orig;
     uint      width;
     uint      height;
 } monitor_t;
