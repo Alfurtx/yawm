@@ -4,8 +4,8 @@
 
 - [x] issue: neovide and google (and possibly other apps) don't open
         solved: it only proves to be an issue in Xephyr because testing in live has proved to work just fine
-- [ ] issue with character like '[', ']', ':' and probably others
-- [ ] issue with click processing
+- [?] issue with character like '[', ']', ':' and probably others
+- [?] issue with click processing
 - [x] issue: solve BadWindow errors when deleting a window
 - [x] issue: solve BadValue errors when click
 
@@ -17,10 +17,14 @@
 
 - [x] delete windows
 - [x] move windows in the tile
-- [x] add ICCM and EWMH support
-- [ ] create/delete/go through multiple workspaces
 - [x] add multimonitor support
-- [ ] add top statusbar
-- [ ] add gaps(?)
-- [ ] add autostart script for other apps
-- [ ] change focus of monitor based on last clicked monitor
+
+## FOR THE FUTURE
+
+- [ ] Virtual Desktops: move around and send windows between virtual desktops
+- [ ] Gap between windows option
+- [ ] Status bar option
+- [ ] Autostart script loader
+- [ ] ICCCM and EWMH support
+
+etc.
