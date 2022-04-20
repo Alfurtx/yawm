@@ -33,8 +33,8 @@ static keybind_t keys[] = {
     {        ALT,      XK_w,       deleteclient,     {.v = NULL}},
     {ALT | SHIFT,      XK_j,        cycleclient,       {.i = -1}},
     {ALT | SHIFT,      XK_k,        cycleclient,        {.i = 1}},
-    {ALT | SHIFT,  XK_comma, changemonitorfocus,       {.i = -1}},
-    {ALT | SHIFT, XK_period, changemonitorfocus,        {.i = 1}},
+    {        ALT,  XK_comma, changemonitorfocus,       {.i = -1}},
+    {        ALT, XK_period, changemonitorfocus,        {.i = 1}},
 };
 
 #endif
