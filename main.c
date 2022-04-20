@@ -155,7 +155,6 @@ unmapnotify(XEvent* event)
 {
     XUnmapEvent* ev = &event->xunmap;
     XUnmapWindow(display, ev->window);
-    unmanageclient(ev->window);
 }
 
 internal int
@@ -450,6 +449,7 @@ deleteclient(arg_t args)
         XUngrabServer(display);
     }
 
+    unmanageclient(c->window);
     changefocus((arg_t){.i = -1});
 }
 
@@ -715,8 +715,7 @@ internal void
 focusmonitor(uint pos)
 {
     manager.active_monitor_pos = pos;
-    fprintf(stderr, "ACTIVE MONITOR: %d", pos);
-
+    fprintf(stderr, "ACTIVE MONITOR: %d\n", pos);
     if(manager.monitors[pos].clients)
         focus(manager.monitors[pos].clients[0].window);
 }
