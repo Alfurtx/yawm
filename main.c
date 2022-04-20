@@ -68,7 +68,8 @@ internal void (*handler[LASTEvent])(XEvent*) = {
     [CreateNotify] = createnotify,         [ClientMessage] = clientmessage,
     [ConfigureRequest] = configurerequest, [MapRequest] = maprequest,
     [UnmapNotify] = unmapnotify,           [KeyPress] = keypress,
-    [ButtonPress] = buttonpress,           [MotionNotify] = motionnotify,
+    [ButtonPress] = buttonpress,
+    // [MotionNotify] = motionnotify,
 };
 
 #include "config.h"
@@ -346,8 +347,8 @@ manageclient(Window window)
     XSetWindowBorder(display, window, border_color_inactive);
     XSelectInput(display, window,
                  EnterWindowMask | FocusChangeMask | PropertyChangeMask | StructureNotifyMask);
-    XChangeProperty(display, window, netatoms[NET_WM_CLIENT_LIST], XA_WINDOW, 32, PropModeAppend,
-                    (unsigned char*) &window, 1);
+    // XChangeProperty(display, window, netatoms[NET_WM_CLIENT_LIST], XA_WINDOW, 32,
+    // PropModeAppend,(unsigned char*) &window, 1);
     arrput(manager.monitors[manager.active_monitor_pos].clients, c);
     rearrange();
     XMapWindow(display, c.window);
@@ -393,8 +394,9 @@ focus(Window window)
         }
     }
 
-    XChangeProperty(display, window, netatoms[NET_WM_ACTIVE_WINDOW], XA_WINDOW, PropModeReplace, 32,
-                    (unsigned char*) &window, 1);
+    // XChangeProperty(display, window, netatoms[NET_WM_ACTIVE_WINDOW], XA_WINDOW, PropModeReplace,
+    // 32,
+    //(unsigned char*) &window, 1);
 }
 
 internal void
@@ -547,8 +549,8 @@ internal void
 setupnetcheck(void)
 {
     // NOTE(fonsi): setup list of supported protocols
-    XChangeProperty(display, root, netatoms[NET_WM_SUPPORTED], XA_ATOM, PropModeReplace, 32,
-                    (unsigned char*) netatoms, NET_WM_LAST);
+    // XChangeProperty(display, root, netatoms[NET_WM_SUPPORTED], XA_ATOM, PropModeReplace, 32,
+    //                 (unsigned char*) netatoms, NET_WM_LAST);
 
     // TODO(fonsi): set _NET_NUMBER_OF_DESKTOPS for virtual desktops
 }
