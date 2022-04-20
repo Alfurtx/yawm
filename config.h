@@ -7,6 +7,8 @@
 static const uint  border_width          = 2;
 static const ulong border_color_inactive = 0x00FF00;
 static const ulong border_color_active   = 0xFF0000;
+// TODO(fonsi): add gap_size into rearrange formula
+static const uint  gap_size              = 0;
 
 /* application shell cmd */
 const char* term[]     = {"alacritty", NULL};

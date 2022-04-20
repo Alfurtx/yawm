@@ -6,8 +6,8 @@
         solved: it only proves to be an issue in Xephyr because testing in live has proved to work just fine
 - [ ] issue with character like '[', ']', ':' and probably others
 - [ ] issue with click processing
-- [ ] issue: solve BadWindow errors when deleting a window
-- [ ] issue: solve BadValue errors when click
+- [x] issue: solve BadWindow errors when deleting a window
+- [x] issue: solve BadValue errors when click
 
 ## REFACTOR
 

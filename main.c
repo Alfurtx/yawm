@@ -6,6 +6,7 @@ global Display* display;
 global bool     quit;
 global Window   root;
 global wm_t     manager;
+global int (*xerrorxlib)(Display*, XErrorEvent*);
 
 /* helper functions */
 internal void start(void);
@@ -56,6 +57,7 @@ internal int xerror(Display* display, XErrorEvent* error);
 internal int xiniterror(Display* display, XErrorEvent* error);
 
 /* event handler functions */
+internal void destroynotify(XEvent* event);
 internal void motionnotify(XEvent* event);
 internal void createnotify(XEvent* event);
 internal void clientmessage(XEvent* event);
@@ -65,11 +67,15 @@ internal void maprequest(XEvent* event);
 internal void unmapnotify(XEvent* event);
 internal void keypress(XEvent* event);
 internal void (*handler[LASTEvent])(XEvent*) = {
-    [CreateNotify] = createnotify,         [ClientMessage] = clientmessage,
-    [ConfigureRequest] = configurerequest, [MapRequest] = maprequest,
-    [UnmapNotify] = unmapnotify,           [KeyPress] = keypress,
-    [ButtonPress] = buttonpress,
+    [CreateNotify]     = createnotify,
+    [ClientMessage]    = clientmessage,
+    [ConfigureRequest] = configurerequest,
+    [MapRequest]       = maprequest,
+    [UnmapNotify]      = unmapnotify,
+    [KeyPress]         = keypress,
+    [ButtonPress]      = buttonpress,
     // [MotionNotify] = motionnotify,
+    [DestroyNotify] = destroynotify,
 };
 
 #include "config.h"
@@ -180,7 +186,7 @@ die(char* msg, int errorcode)
 internal void
 checkotherwm(void)
 {
-    XSetErrorHandler(xiniterror);
+    xerrorxlib = XSetErrorHandler(xiniterror);
     XSelectInput(display, root, SubstructureRedirectMask | SubstructureNotifyMask);
     XSync(display, False);
     XSetErrorHandler(xerror);
@@ -190,8 +196,19 @@ checkotherwm(void)
 internal int
 xerror(Display* display, XErrorEvent* error)
 {
-    die("", error->error_code);
-    return (EXIT_SUCCESS);
+    if(error->error_code == BadWindow ||
+       (error->request_code == X_SetInputFocus && error->error_code == BadMatch) ||
+       (error->request_code == X_PolyText8 && error->error_code == BadDrawable) ||
+       (error->request_code == X_PolyFillRectangle && error->error_code == BadDrawable) ||
+       (error->request_code == X_PolySegment && error->error_code == BadDrawable) ||
+       (error->request_code == X_ConfigureWindow && error->error_code == BadMatch) ||
+       (error->request_code == X_GrabButton && error->error_code == BadAccess) ||
+       (error->request_code == X_GrabKey && error->error_code == BadAccess) ||
+       (error->request_code == X_CopyArea && error->error_code == BadDrawable))
+        return 0;
+    fprintf(stderr, "dwm: fatal error: request code=%d, error code=%d\n", error->request_code,
+            error->error_code);
+    return xerrorxlib(display, error); /* may call exit */
 }
 
 internal void
@@ -405,9 +422,11 @@ changefocus(arg_t args)
     monitor_t* monitor = &manager.monitors[manager.active_monitor_pos];
     int        count   = arrlenu(monitor->clients);
 
-    if(count == 0)
+    if(count == 0) {
+        manager.active_window_pos = -1;
+        XSetInputFocus(display, root, RevertToPointerRoot, CurrentTime);
         return;
-    else {
+    } else {
         int aux = manager.active_window_pos + args.i;
         if(aux < 0)
             aux = count - 1;
@@ -720,4 +739,10 @@ focusmonitor(uint pos)
     fprintf(stderr, "ACTIVE MONITOR: %d\n", pos);
     if(manager.monitors[pos].clients)
         focus(manager.monitors[pos].clients[0].window);
+}
+
+internal void
+destroynotify(XEvent* event)
+{
+    return;
 }
